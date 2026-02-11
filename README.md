@@ -75,3 +75,69 @@ There is a need for an intelligent, centralized, and user-friendly platform that
 ### 3.Admin ↔ Platform
 - Admin manages scheme visibility
 - Admin monitors system health
+
+## TechStack:
+- Frontend: React.js
+- Backend: Node.js, Express.js
+- Database: MongoDB
+- API Integration: data.gov.in
+- Authentication: JWT
+- Automation: Cron jobs
+
+## Packages:
+### Frontend(React)
+- react-Build UI using components (Login, Home, Schemes pages)
+- react-dom-Render React components in the browser
+- react-scripts-Start, build, and run the React application
+- react-router-dom-Navigation between pages (Login → Home → Schemes)
+- axios-Send HTTP requests from frontend to backend APIs
+### Backend Packages (Node.js + Express)
+- express-Create REST APIs for users, schemes, and recommendation
+- mongoose-Connect backend to MongoDB and define schemas
+- cors-Allow frontend (React) to communicate with backend
+- dotenv-Store sensitive data like DB URL and JWT secret securely
+- axios-Fetch government scheme data from data.gov.in API
+### Authentication Packages (JWT)
+- jsonwebtoken-Generate and verify JWT tokens for user authentication
+- bcryptjs-Encrypt user passwords before storing in database
+### Automation / Scheduling
+- node-cron-Schedule automatic tasks like scheme data updates and deadline checks
+### API Integration (data.gov.in)
+- axios
+###  Development Utility
+nodemon-Automatically restart backend server during development
+
+## Tools:
+### Development & Coding Tools
+- VS Code-Writing frontend & backend code
+- Command Prompt-Running React & Node servers
+- Node.js-JavaScript runtime environment
+- npm-Package management
+### Frontend Development Tools
+- React (via npm)-Building UI components
+- Web Browser (Chrome)-Testing frontend UI
+###  Backend Development Tools
+- Node.js-Backend runtime
+- Express.js-API development
+- Postman-Testing backend APIs
+### Database Tools
+- MongoDB-NoSQL database
+- MongoDB Compass-Database visualization & testing
+- Excel-Initial database design (tables & relations)
+### Version Control & Collaboration
+- Git-Version control
+- GitHub-Code hosting & collaboration
+
+## DataSchemas:
+- User(user_id,user_name,emailid,password,dob,name)
+- Schemes(scheme_id,scheme_name,category,dept,min_income,max_income,min_age,max_age,deadline,documents,gender)
+- OptedScheme(user_id,scheme_id,applied_date,status(opted/not))
+
+
+
+
+
+
+
+
+
