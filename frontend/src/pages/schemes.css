@@ -1,0 +1,74 @@
+.schemes-container {
+  padding: 40px;
+  background: #f4f6fb;
+  min-height: 100vh;
+  animation: fadeIn 0.7s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.scheme-form {
+  background: white;
+  padding: 25px;
+  max-width: 700px;
+  margin: auto;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  transition: 0.3s;
+}
+
+.scheme-form:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+}
+
+.scheme-form input,
+.scheme-form select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+   transition: 0.3s;
+}
+
+.scheme-form input:focus,
+.scheme-form select:focus {
+  border: 1px solid #667eea;
+  box-shadow: 0 0 8px rgba(102,126,234,0.4);
+  outline: none;
+}
+
+.scheme-form button {
+  width: 100%;
+  padding: 10px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.scheme-form button:hover {
+  background: #4c5bd4;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+.result {
+  background: white;
+  padding: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}

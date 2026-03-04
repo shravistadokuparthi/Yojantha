@@ -1,0 +1,36 @@
+.dashboard {
+  width: 100%;
+  min-height: 100vh;
+  background: #f4f6fb;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  background: linear-gradient(90deg, #003366, #0059b3);
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  background: #2e6da4;
+  padding: 2px;
+  text-align: center;
+}
+
+.navbar button {
+  background: transparent;
+  border: none;
+  color: white;
+  margin: 0 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Content */
+.main-content {
+  padding: 40px;
+}
