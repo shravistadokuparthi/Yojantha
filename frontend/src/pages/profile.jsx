@@ -2,6 +2,24 @@ import { useState, useEffect } from "react";
 import "./profile.css";
 import { useNavigate } from "react-router-dom";
 
+/* PASSWORD REGEX */
+const passwordRegex =
+/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+
+/* PASSWORD STRENGTH FUNCTION */
+const getPasswordStrength = (password) => {
+
+  if (!password) return "";
+
+  if (/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/.test(password))
+    return "Strong";
+
+  if (/^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(password))
+    return "Medium";
+
+  return "Weak";
+};
+
 function Profile() {
 
   const navigate = useNavigate();
@@ -17,7 +35,12 @@ function Profile() {
     gender: ""
   });
 
-  // Fetch profile when page loads
+  const [oldPassword,setOldPassword] = useState("");
+  const [newPassword,setNewPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [passwordStrength,setPasswordStrength] = useState("");
+
+  /* FETCH PROFILE */
   useEffect(() => {
 
     const fetchProfile = async () => {
@@ -62,7 +85,7 @@ function Profile() {
 
   };
 
-  // Save profile
+  /* SAVE PROFILE */
   const handleSave = async () => {
 
     try {
@@ -85,8 +108,6 @@ function Profile() {
 
       });
 
-      const data = await res.json();
-
       if (res.ok) {
         alert("Profile updated successfully");
       }
@@ -101,136 +122,167 @@ function Profile() {
 
   };
 
-  //handle password change
-const [oldPassword, setOldPassword] = useState("");
-const [newPassword, setNewPassword] = useState("");
-const [confirmPassword, setConfirmPassword] = useState("");
-
+  /* UPDATE PASSWORD */
   const handlePasswordUpdate = async () => {
 
-  try {
+    if(!oldPassword || !newPassword || !confirmPassword){
+      alert("All password fields required");
+      return;
+    }
 
-    const res = await fetch("http://localhost:5000/api/user/update-password", {
+    /* password ≠ username */
+    if(newPassword.toLowerCase() === user.name.toLowerCase()){
+      alert("Password cannot be same as name");
+      return;
+    }
 
-      method: "PUT",
+    /* regex validation */
+    if(!passwordRegex.test(newPassword)){
+      alert("Password must contain 8 characters with letters, numbers and special symbols");
+      return;
+    }
 
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token")
-      },
+    if(newPassword !== confirmPassword){
+      alert("Passwords do not match");
+      return;
+    }
 
-      body: JSON.stringify({
-        oldPassword,
-        newPassword,
-        confirmPassword
-      })
+    try {
 
-    });
+      const res = await fetch("http://localhost:5000/api/user/update-password", {
 
-    const data = await res.json();
+        method: "PUT",
 
-    if (res.ok) {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token")
+        },
 
-      alert("Password updated successfully");
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+          confirmPassword
+        })
 
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      });
 
-    } else {
+      const data = await res.json();
 
-      alert(data.message);
+      if (res.ok) {
+
+        alert("Password updated successfully");
+
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setPasswordStrength("");
+
+      } else {
+
+        alert(data.message);
+
+      }
+
+    } catch (error) {
+
+      console.log("Error updating password");
 
     }
 
-  } catch (error) {
+  };
 
-    console.log("Error updating password");
+  /* LOGOUT */
+  const handleLogout = () => {
 
-  }
+    localStorage.removeItem("token");
 
-};
+    alert("Logged out successfully");
 
-//handle logout
-const handleLogout = () => {
+    navigate("/");
 
-  localStorage.removeItem("token");
-
-  alert("Logged out successfully");
-
-  navigate("/");
-
-};
+  };
 
   return (
     <div className="profile-container">
 
       <h2>User Profile</h2>
 
-      {/* Status */}
       <div className="status">🟢 Account Verified</div>
 
-      {/* Personal Info */}
+      {/* PERSONAL INFO */}
       <div className="card">
         <h3>Personal Information</h3>
 
-        <input name="name" value={user.name} onChange={handleChange} disabled={!editing} placeholder="name"/>
-        <input name="email" value={user.email} onChange={handleChange} disabled={!editing} placeholder="email"/>
-        <input name="mobile" value={user.mobile} onChange={handleChange} disabled={!editing} placeholder="mobile"/>
-        <input name="place" value={user.place} onChange={handleChange} disabled={!editing} placeholder="place"/>
-        <input name="dob" value={user.dob} onChange={handleChange} disabled={!editing} placeholder="date of birth"/>
-        <input name="gender" value={user.gender} onChange={handleChange} disabled={!editing} placeholder="gender"/>
+        <input name="name" value={user.name} onChange={handleChange} disabled={!editing} placeholder="Name"/>
+        <input name="email" value={user.email} onChange={handleChange} disabled={!editing} placeholder="Email"/>
+        <input name="mobile" value={user.mobile} onChange={handleChange} disabled={!editing} placeholder="Mobile"/>
+        <input name="place" value={user.place} onChange={handleChange} disabled={!editing} placeholder="City"/>
+        <input name="dob" value={user.dob} onChange={handleChange} disabled={!editing} placeholder="Date of Birth"/>
+        <input name="gender" value={user.gender} onChange={handleChange} disabled={!editing} placeholder="Gender"/>
 
         <button onClick={editing ? handleSave : () => setEditing(true)}>
           {editing ? "Save" : "Edit"}
         </button>
       </div>
 
-      {/* Scheme Stats */}
-      <div className="stats">
-        <div className="stat-card">
-          <h4>Eligible</h4>
-          <p>8</p>
-        </div>
-      </div>
-
-      {/* Progress */}
+      {/* PASSWORD CHANGE */}
       <div className="card">
-        <h3>Application Progress</h3>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: "70%" }}>
-            70%
-          </div>
-        </div>
-      </div>
 
-      {/* Change Password */}
-      <div className="card">
         <h3>Change Password</h3>
-      <input
-type="password"
-placeholder="Old Password"
-value={oldPassword}
-onChange={(e) => setOldPassword(e.target.value)}
-/>
 
-<input
-type="password"
-placeholder="New Password"
-value={newPassword}
-onChange={(e) => setNewPassword(e.target.value)}
-/>
+        <input
+        type="password"
+        placeholder="Old Password"
+        value={oldPassword}
+        onChange={(e)=>setOldPassword(e.target.value)}
+        />
 
-<input
-type="password"
-placeholder="Confirm Password"
-value={confirmPassword}
-onChange={(e) => setConfirmPassword(e.target.value)}
-/>
-        <button onClick={handlePasswordUpdate}>Update Password</button>
+        <input
+        type="password"
+        placeholder="New Password"
+        value={newPassword}
+        onChange={(e)=>{
+
+          const val = e.target.value;
+
+          setNewPassword(val);
+
+          setPasswordStrength(getPasswordStrength(val));
+
+        }}
+        />
+
+        {newPassword && (
+          <p style={{
+            color:
+            passwordStrength==="Weak"?"red":
+            passwordStrength==="Medium"?"orange":
+            passwordStrength==="Strong"?"green":""
+          }}>
+            Password Strength: {passwordStrength}
+          </p>
+        )}
+
+        <input
+        type="password"
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChange={(e)=>setConfirmPassword(e.target.value)}
+        onPaste={(e)=>e.preventDefault()}
+        onCopy={(e)=>e.preventDefault()}
+        onCut={(e)=>e.preventDefault()}
+        />
+
+        <button onClick={handlePasswordUpdate}>
+          Update Password
+        </button>
+
       </div>
-      {/* Logout */}
-     <button className="logout" onClick={handleLogout}>Logout</button>
+
+      {/* LOGOUT */}
+      <button className="logout" onClick={handleLogout}>
+        Logout
+      </button>
 
     </div>
   );

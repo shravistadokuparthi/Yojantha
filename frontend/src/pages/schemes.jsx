@@ -11,18 +11,20 @@ function Schemes() {
     schemeType: ""
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-const navigate = useNavigate();
-const handleSubmit = (e) => {
-  e.preventDefault();
-  navigate("/recommendations");
-};
+    // Send schemeType to recommendations page
+    navigate("/recommendations", {
+      state: { schemeType: formData.schemeType }
+    });
+  };
 
   return (
     <div className="schemes-container">
@@ -67,7 +69,6 @@ const handleSubmit = (e) => {
           required
         />
 
-        {/* Dropdown */}
         <select
           name="schemeType"
           value={formData.schemeType}
@@ -85,18 +86,6 @@ const handleSubmit = (e) => {
         <button type="submit">Check Schemes</button>
 
       </form>
-
-      {/* Display Data */}
-      {submitted && (
-        <div className="result">
-          <h3>Entered Details</h3>
-          <p><strong>Name:</strong> {formData.name}</p>
-          <p><strong>Age:</strong> {formData.age}</p>
-          <p><strong>Income:</strong> ₹{formData.income}</p>
-          <p><strong>Category:</strong> {formData.category}</p>
-          <p><strong>Scheme Type:</strong> {formData.schemeType}</p>
-        </div>
-      )}
 
     </div>
   );

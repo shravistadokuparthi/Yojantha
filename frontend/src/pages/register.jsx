@@ -1,15 +1,43 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+/* Password regex */
+const passwordRegex =
+/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+
+/* Password strength function */
+const getPasswordStrength = (password) => {
+
+  if (!password) return "";
+
+  /* Strong password */
+  if (/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/.test(password)) {
+    return "Strong";
+  }
+
+  /* Medium password */
+  if (/^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(password)) {
+    return "Medium";
+  }
+
+  /* Weak password */
+  if (password.length > 0) {
+    return "Weak";
+  }
+
+  return "";
+};
+
 function Register() {
 
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [passwordStrength,setPasswordStrength] = useState("");
+  const [error,setError] = useState("");
 
   const handleRegister = async () => {
 
@@ -23,8 +51,17 @@ function Register() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    /* Password cannot match name */
+    if(password.toLowerCase() === name.toLowerCase()){
+      setError("Password cannot be same as name");
+      return;
+    }
+
+    /* Regex validation */
+    if(!passwordRegex.test(password)){
+      setError(
+"Password must contain at least 8 characters with letters, numbers and special symbols"
+      );
       return;
     }
 
@@ -36,16 +73,20 @@ function Register() {
     try {
 
       const response = await fetch("http://localhost:5000/api/auth/register", {
+
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
+
         body: JSON.stringify({
           name,
           email,
           password,
           confirmPassword
         })
+
       });
 
       const data = await response.json();
@@ -54,7 +95,7 @@ function Register() {
 
         alert("Registration successful 🎉");
 
-        navigate("/"); // go to login
+        navigate("/");
 
       } else {
 
@@ -71,6 +112,7 @@ function Register() {
   };
 
   return (
+
     <div className="container">
 
       <div className="card">
@@ -82,7 +124,7 @@ function Register() {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e)=>setName(e.target.value)}
         />
 
         <input
@@ -90,7 +132,7 @@ function Register() {
           type="text"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e)=>setEmail(e.target.value)}
         />
 
         <input
@@ -98,18 +140,45 @@ function Register() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e)=>{
+
+            const val = e.target.value;
+
+            setPassword(val);
+
+            setPasswordStrength(getPasswordStrength(val));
+
+          }}
         />
+
+        {/* Password strength indicator */}
+        {password && (
+
+        <p style={{
+          color:
+          passwordStrength==="Weak"?"red":
+          passwordStrength==="Medium"?"orange":
+          passwordStrength==="Strong"?"green":"black"
+        }}>
+          Password Strength: {passwordStrength}
+        </p>
+
+        )}
 
         <input
           className="input"
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e)=>setConfirmPassword(e.target.value)}
+
+          /* Disable copy paste */
+          onPaste={(e)=>e.preventDefault()}
+          onCopy={(e)=>e.preventDefault()}
+          onCut={(e)=>e.preventDefault()}
         />
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{color:"red"}}>{error}</p>}
 
         <button className="button" onClick={handleRegister}>
           Register
@@ -122,6 +191,7 @@ function Register() {
       </div>
 
     </div>
+
   );
 }
 
