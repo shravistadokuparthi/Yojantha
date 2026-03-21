@@ -135,8 +135,8 @@ nodemon-Automatically restart backend server during development
 
 ## Suggestions:
 - use the apis for getting the data of schemes
-- make a strong password
-- explore git changes option
+- make a strong password ..
+- explore git changes option ..
 - notification alert of chosen language
 - visitor count(time spent by user) 
 
