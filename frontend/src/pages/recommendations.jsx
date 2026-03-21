@@ -1,82 +1,84 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./recommendations.css";
 import { useLocation } from "react-router-dom";
 
 function Recommendations() {
 
   const location = useLocation();
-  const selectedType = location.state?.schemeType;
 
+  // ✅ FIX 1: get from localStorage if state is lost (refresh case)
+  const selectedType =
+    location.state?.schemeType || localStorage.getItem("schemeType");
+
+  const [schemes, setSchemes] = useState([]);
   const [selectedScheme, setSelectedScheme] = useState(null);
 
-  const schemes = [
-    {
-      name: "Education Scholarship",
-      type: "Education",
-      description: "Financial support for students.",
-      documents: ["Aadhaar Card", "Income Certificate", "Student ID"]
-    },
-    {
-      name: "Women Welfare Scheme",
-      type: "Women Welfare",
-      description: "Support for women entrepreneurs.",
-      documents: ["Aadhaar Card", "Address Proof", "Bank Passbook"]
-    },
-    {
-      name: "Health Support Scheme",
-      type: "Health",
-      description: "Medical financial assistance.",
-      documents: ["Aadhaar Card", "Medical Certificate"]
-    },
-    {
-      name: "Startup India Scheme",
-      type: "Startup",
-      description: "Funding and support for startups.",
-      documents: ["Aadhaar Card", "Business Plan", "Bank Details"]
-    },
-    {
-      name: "Agriculture Subsidy",
-      type: "Agriculture",
-      description: "Financial help for farmers.",
-      documents: ["Aadhaar Card", "Land Certificate", "Bank Passbook"]
-    }
-  ];
+  useEffect(() => {
 
-  // Filter schemes
-  const filteredSchemes = schemes.filter(
-    (scheme) => scheme.type === selectedType
-  );
+    if (!selectedType) {
+      console.log("No selectedType found");
+      return;
+    }
+
+    fetch("http://localhost:5000/api/schemes")
+      .then(res => res.json())
+      .then(data => {
+        console.log("Selected Type:", selectedType);
+        console.log("All Data:", data);
+
+        // ✅ FIX 2: correct filtering
+        const filtered = data.filter(scheme => {
+          if (!scheme.schemeCategory) return false;
+
+          return scheme.schemeCategory
+            .toLowerCase()
+            .includes(selectedType.toLowerCase());
+        });
+
+        console.log("Filtered Data:", filtered);
+
+        setSchemes(filtered);
+      })
+      .catch(err => console.log(err));
+
+  }, [selectedType]);
 
   return (
     <div className="recommend-container">
 
       <h2 className="page-title">Recommended Schemes</h2>
 
-      <div className="scheme-grid">
-        {filteredSchemes.map((scheme, index) => (
-          <div
-            key={index}
-            className="scheme-card"
-            onClick={() => setSelectedScheme(scheme)}
-          >
-            <h3>{scheme.name}</h3>
-            <p>{scheme.description}</p>
-          </div>
-        ))}
-      </div>
+      {schemes.length === 0 ? (
+        <p>No schemes found</p>
+      ) : (
+        <div className="scheme-grid">
+          {schemes.map((scheme) => (
+            <div
+              key={scheme._id}
+              className="scheme-card"
+              onClick={() => setSelectedScheme(scheme)}
+            >
+              <h3>{scheme.scheme_name}</h3>
+              <p>{scheme.details?.substring(0, 100)}...</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {selectedScheme && (
         <div className="details-section">
 
-          <h3>{selectedScheme.name}</h3>
-          <p>{selectedScheme.description}</p>
+          <h3>{selectedScheme.scheme_name}</h3>
+          <p>{selectedScheme.details}</p>
 
-          <h4>Required Documents</h4>
-          <ul>
-            {selectedScheme.documents.map((doc, i) => (
-              <li key={i}>{doc}</li>
-            ))}
-          </ul>
+          <h4>Benefits</h4>
+          <p>{selectedScheme.benefits}</p>
+
+          <h4>Eligibility</h4>
+          <p>{selectedScheme.eligibility}</p>
+
+          <h4>Documents</h4>
+          <p>{selectedScheme.documents}</p>
 
           <input type="file" />
           <button>Submit Application</button>
