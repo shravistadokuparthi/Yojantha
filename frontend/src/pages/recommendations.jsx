@@ -20,24 +20,12 @@ function Recommendations() {
       return;
     }
 
-    fetch("http://localhost:5000/api/schemes")
+    fetch(`http://localhost:5000/api/schemes?type=${selectedType}`)
       .then(res => res.json())
       .then(data => {
         console.log("Selected Type:", selectedType);
         console.log("All Data:", data);
-
-        // ✅ FIX 2: correct filtering
-        const filtered = data.filter(scheme => {
-          if (!scheme.schemeCategory) return false;
-
-          return scheme.schemeCategory
-            .toLowerCase()
-            .includes(selectedType.toLowerCase());
-        });
-
-        console.log("Filtered Data:", filtered);
-
-        setSchemes(filtered);
+        setSchemes(data);
       })
       .catch(err => console.log(err));
 
