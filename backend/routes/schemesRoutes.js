@@ -1,22 +1,50 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 const Scheme = require("../models/Schemes");
 
-// ✅ Filter by category from query
+// ✅ FILTER SCHEMES
 router.get("/", async (req, res) => {
   try {
-    const { type } = req.query;
+    const { type, level } = req.query;
 
     let query = {};
 
     if (type) {
-      query.schemeCategory = { $regex: type, $options: "i" }; // case-insensitive
+      query.schemeCategory = { $regex: type, $options: "i" };
     }
 
-    const data = await Scheme.find(query).limit(50); // 🔥 LIMIT for speed
+    if (level) {
+      query.level = { $regex: level, $options: "i" };
+    }
 
+    const data = await Scheme.find(query);
     res.json(data);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// ✅ FETCH BY IDS (FINAL)
+router.post("/byIds", async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || ids.length === 0) {
+      return res.json([]);
+    }
+
+    const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
+
+    const schemes = await Scheme.find({
+      _id: { $in: objectIds }
+    });
+
+    res.json(schemes);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

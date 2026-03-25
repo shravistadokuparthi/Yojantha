@@ -6,30 +6,101 @@ function Recommendations() {
 
   const location = useLocation();
 
-  // ✅ FIX 1: get from localStorage if state is lost (refresh case)
   const selectedType =
     location.state?.schemeType || localStorage.getItem("schemeType");
 
+  const level = localStorage.getItem("level");
+
   const [schemes, setSchemes] = useState([]);
   const [selectedScheme, setSelectedScheme] = useState(null);
+  const [user, setUser] = useState(null);
 
+  
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
 
-    if (!selectedType) {
-      console.log("No selectedType found");
-      return;
-    }
+        const data = await res.json();
+        setUser(data);
 
-    fetch(`http://localhost:5000/api/schemes?type=${selectedType}`)
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/schemes?type=${selectedType}&level=${level}`)
       .then(res => res.json())
       .then(data => {
-        console.log("Selected Type:", selectedType);
-        console.log("All Data:", data);
         setSchemes(data);
+
+        localStorage.setItem("eligibleCount", data.length);
       })
       .catch(err => console.log(err));
+  }, [selectedType, level]);
 
-  }, [selectedType]);
+ 
+  const handleInterested = async (schemeId) => {
+  try {
+    const res = await fetch("http://localhost:5000/api/apply/interested", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ schemeId })
+    });
+
+    await res.json();
+
+    // ✅ IMPORTANT: update UI instantly
+    setUser((prev) => ({
+      ...prev,
+      interestedSchemes: [...(prev?.interestedSchemes || []), schemeId]
+    }));
+
+    alert("Marked as Interested ⭐");
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+  const handleApply = async (schemeId) => {
+  try {
+    const res = await fetch("http://localhost:5000/api/apply/apply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ schemeId })
+    });
+
+    await res.json();
+
+    setUser((prev) => ({
+      ...prev,
+      appliedSchemes: [...(prev?.appliedSchemes || []), schemeId],
+      interestedSchemes: prev?.interestedSchemes?.filter(id => id !== schemeId)
+    }));
+
+    alert("Application Submitted ✅");
+
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   return (
     <div className="recommend-container">
@@ -68,8 +139,25 @@ function Recommendations() {
           <h4>Documents</h4>
           <p>{selectedScheme.documents}</p>
 
-          <input type="file" />
-          <button>Submit Application</button>
+          {/* INTERESTED BUTTON */}
+          <button
+            onClick={() => handleInterested(selectedScheme._id)}
+            disabled={user?.interestedSchemes?.includes(selectedScheme._id)}
+          >
+            {user?.interestedSchemes?.includes(selectedScheme._id)
+              ? "Already Interested"
+              : " Interested"}
+          </button>
+
+          {/*  APPLY BUTTON */}
+          <button
+            onClick={() => handleApply(selectedScheme._id)}
+            disabled={user?.appliedSchemes?.includes(selectedScheme._id)}
+          >
+            {user?.appliedSchemes?.includes(selectedScheme._id)
+              ? " Already Applied"
+              : " Apply"}
+          </button>
 
         </div>
       )}

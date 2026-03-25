@@ -8,6 +8,7 @@ function Schemes() {
     age: "",
     income: "",
     category: "",
+    level: "",
     schemeType: ""
   });
 
@@ -20,10 +21,11 @@ function Schemes() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Send schemeType to recommendations page
-    navigate("/recommendations", {
-      state: { schemeType: formData.schemeType }
-    });
+    // Send schemeType to recommendations page via localStorage (to persist across refreshes)
+localStorage.setItem("schemeType", formData.schemeType);
+localStorage.setItem("level", formData.level);
+
+navigate("/recommendations");
   };
 
   return (
@@ -70,17 +72,42 @@ function Schemes() {
         />
 
         <select
+  name="level"
+  value={formData.level}
+  onChange={handleChange}
+>
+  <option value="">All (Central + State)</option>
+  <option value="Central">Central</option>
+  <option value="State">State</option>
+</select>
+
+        <select
           name="schemeType"
           value={formData.schemeType}
           onChange={handleChange}
           required
         >
-          <option value="">Select Scheme Type</option>
-          <option value="Education">Education</option>
-          <option value="Women Welfare">Women Welfare</option>
-          <option value="Agriculture">Agriculture</option>
-          <option value="Startup">Startup</option>
-          <option value="Health">Health</option>
+           <option value="">Select Scheme Type</option>
+
+  <option value="Agriculture">Agriculture</option>
+  <option value="Rural & Environment">Rural & Environment</option>
+  <option value="Banking">Banking</option>
+  <option value="Financial Services and Insurance">Financial Services and Insurance</option>
+  <option value="Business & Entrepreneurship">Business & Entrepreneurship</option>
+  <option value="Education & Learning">Education & Learning</option>
+  <option value="Health & Wellness">Health & Wellness</option>
+  <option value="Housing & Shelter">Housing & Shelter</option>
+  <option value="Science">Science</option>
+  <option value="IT & Communications">IT & Communications</option>
+  <option value="Skills & Employment">Skills & Employment</option>
+  <option value="Social welfare & Empowerment">Social welfare & Empowerment</option>
+  <option value="Sports & Culture">Sports & Culture</option>
+  <option value="Transport & Infrastructure">Transport & Infrastructure</option>
+  <option value="Travel & Tourism">Travel & Tourism</option>
+  <option value="Utility & Sanitation">Utility & Sanitation</option>
+  <option value="Women and Child">Women and Child</option>
+  <option value="Public Safety">Public Safety</option>
+  <option value="Law & Justice">Law & Justice</option>
         </select>
 
         <button type="submit">Check Schemes</button>

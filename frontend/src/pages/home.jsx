@@ -1,6 +1,51 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./home.css";
 
 function Home() {
+  const navigate = useNavigate();
+
+  // ✅ Stats state
+  const [stats, setStats] = useState({
+    eligible: 0,
+    applied: 0
+  });
+
+  const [visitors, setVisitors] = useState(0);
+
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/visit")
+      .then(res => res.json())
+      .then(data => setVisitors(data?.count || 0))
+      .catch(err => console.log(err));
+  }, []);
+
+  // ✅ Fetch user stats (safe - no interval)
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        const user = await res.json();
+
+        setStats({
+          applied: user.appliedSchemes?.length || 0,
+          eligible: user.interestedSchemes?.length || 0
+        });
+
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <div className="home-container">
 
@@ -15,18 +60,30 @@ function Home() {
 
       {/* Stats Section */}
       <div className="stats">
-        <div className="stat-card">
+
+        <div
+          className="stat-card"
+          onClick={() => navigate("/myschemes?type=interested")}
+        >
           <h4>Eligible Schemes</h4>
-          <p>8</p>
+          <p>{stats.eligible}</p>
         </div>
 
-        <div className="stat-card">
+        <div
+          className="stat-card"
+          onClick={() => navigate("/myschemes?type=applied")}
+        >
           <h4>Applied</h4>
-          <p>3</p>
+          <p>{stats.applied}</p>
         </div>
 
       </div>
 
+      {/* Visitor Count */}
+      <div className="card">
+        <h3>Total Visitors</h3>
+        <p>{visitors}</p>
+      </div>
 
       {/* Updates */}
       <div className="card">
