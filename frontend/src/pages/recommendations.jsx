@@ -62,7 +62,7 @@ function Recommendations() {
 
     await res.json();
 
-    // ✅ IMPORTANT: update UI instantly
+    
     setUser((prev) => ({
       ...prev,
       interestedSchemes: [...(prev?.interestedSchemes || []), schemeId]
