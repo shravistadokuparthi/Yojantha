@@ -5,7 +5,7 @@ import "./home.css";
 function Home() {
   const navigate = useNavigate();
 
-  // ✅ Stats state
+  // Stats state
   const [stats, setStats] = useState({
     eligible: 0,
     applied: 0
@@ -21,7 +21,7 @@ function Home() {
       .catch(err => console.log(err));
   }, []);
 
-  // ✅ Fetch user stats (safe - no interval)
+  // Fetch user stats 
   useEffect(() => {
     const fetchStats = async () => {
       try {
