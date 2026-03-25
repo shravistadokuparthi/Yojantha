@@ -5,7 +5,7 @@ function MySchemes() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // ✅ Get type from URL (?type=applied / interested)
+  
   const type = searchParams.get("type") || "interested";
 
   const [schemes, setSchemes] = useState([]);
@@ -24,7 +24,7 @@ function MySchemes() {
 
         console.log("TYPE:", type);
 
-        // ✅ 1. GET USER
+   
         const userRes = await fetch("http://localhost:5000/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`
@@ -40,7 +40,7 @@ function MySchemes() {
           return;
         }
 
-        // ✅ 2. GET IDS
+   
         const ids =
           type === "applied"
             ? user.appliedSchemes || []
@@ -54,7 +54,7 @@ function MySchemes() {
           return;
         }
 
-        // ✅ 3. FETCH SCHEMES FROM BACKEND
+  
         const res = await fetch("http://localhost:5000/api/schemes/byIds", {
           method: "POST",
           headers: {
