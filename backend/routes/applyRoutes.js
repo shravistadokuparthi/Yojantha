@@ -4,7 +4,7 @@ const router = express.Router();
 const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
 
-// ⭐ MARK AS INTERESTED
+//MARK AS INTERESTED
 router.post("/interested", auth, async (req, res) => {
   try {
     const { schemeId } = req.body;
@@ -28,7 +28,7 @@ router.post("/interested", auth, async (req, res) => {
   }
 });
 
-// ✅ APPLY
+// APPLY
 router.post("/apply", auth, async (req, res) => {
   try {
     const { schemeId } = req.body;
