@@ -1,18 +1,21 @@
 import { useState } from "react";
 import "./schemes.css";
-import { useNavigate } from "react-router-dom";
 
-function Schemes() {
+const SCHEME_TYPES = [
+  "Agriculture", "Rural & Environment", "Banking",
+  "Financial Services and Insurance", "Business & Entrepreneurship",
+  "Education & Learning", "Health & Wellness", "Housing & Shelter",
+  "Science", "IT & Communications", "Skills & Employment",
+  "Social welfare & Empowerment", "Sports & Culture",
+  "Transport & Infrastructure", "Travel & Tourism",
+  "Utility & Sanitation", "Women and Child",
+  "Public Safety", "Law & Justice",
+];
+
+function Schemes({ navigateTo }) {
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    income: "",
-    category: "",
-    level: "",
-    schemeType: ""
+    name: "", age: "", income: "", category: "", level: "", schemeType: ""
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,100 +23,89 @@ function Schemes() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Send schemeType to recommendations page via localStorage (to persist across refreshes)
-localStorage.setItem("schemeType", formData.schemeType);
-localStorage.setItem("level", formData.level);
-
-navigate("/recommendations");
+    navigateTo("recommendations", {
+      schemeType: formData.schemeType,
+      level: formData.level,
+    });
   };
 
   return (
-    <div className="schemes-container">
+    <div className="sc-root">
 
-      <h2>Find Suitable Schemes</h2>
+      {/* Page heading */}
+      <div className="sc-heading">
+        <h2 className="sc-title">Find Suitable Schemes</h2>
+        <p className="sc-sub">Fill in your details and we'll match you with eligible government schemes.</p>
+      </div>
 
-      <form className="scheme-form" onSubmit={handleSubmit}>
+      {/* Form card */}
+      <div className="sc-card">
+        <form className="sc-form" onSubmit={handleSubmit}>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+          <div className="sc-grid">
+            {/* Name */}
+            <div className="sc-field">
+              <label className="sc-label">Full Name</label>
+              <input className="sc-input" type="text" name="name"
+                placeholder="Enter your name"
+                value={formData.name} onChange={handleChange} required />
+            </div>
 
-        <input
-          type="number"
-          name="age"
-          placeholder="Enter Age"
-          value={formData.age}
-          onChange={handleChange}
-          required
-        />
+            {/* Age */}
+            <div className="sc-field">
+              <label className="sc-label">Age</label>
+              <input className="sc-input" type="number" name="age"
+                placeholder="Your age"
+                value={formData.age} onChange={handleChange} required />
+            </div>
 
-        <input
-          type="number"
-          name="income"
-          placeholder="Enter Annual Income"
-          value={formData.income}
-          onChange={handleChange}
-          required
-        />
+            {/* Income */}
+            <div className="sc-field">
+              <label className="sc-label">Annual Income (₹)</label>
+              <input className="sc-input" type="number" name="income"
+                placeholder="e.g. 250000"
+                value={formData.income} onChange={handleChange} required />
+            </div>
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Enter Category (SC/ST/OBC/General)"
-          value={formData.category}
-          onChange={handleChange}
-          required
-        />
+            {/* Category */}
+            <div className="sc-field">
+              <label className="sc-label">Category</label>
+              <input className="sc-input" type="text" name="category"
+                placeholder="SC / ST / OBC / General"
+                value={formData.category} onChange={handleChange} required />
+            </div>
 
-        <select
-  name="level"
-  value={formData.level}
-  onChange={handleChange}
->
-  <option value="">All (Central + State)</option>
-  <option value="Central">Central</option>
-  <option value="State">State</option>
-</select>
+            {/* Level */}
+            <div className="sc-field">
+              <label className="sc-label">Scheme Level</label>
+              <select className="sc-input sc-select" name="level"
+                value={formData.level} onChange={handleChange}>
+                <option value="">All (Central + State)</option>
+                <option value="Central">Central</option>
+                <option value="State">State</option>
+              </select>
+            </div>
 
-        <select
-          name="schemeType"
-          value={formData.schemeType}
-          onChange={handleChange}
-          required
-        >
-           <option value="">Select Scheme Type</option>
+            {/* Type */}
+            <div className="sc-field">
+              <label className="sc-label">Scheme Type</label>
+              <select className="sc-input sc-select" name="schemeType"
+                value={formData.schemeType} onChange={handleChange} required>
+                <option value="">Select Scheme Type</option>
+                {SCHEME_TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-  <option value="Agriculture">Agriculture</option>
-  <option value="Rural & Environment">Rural & Environment</option>
-  <option value="Banking">Banking</option>
-  <option value="Financial Services and Insurance">Financial Services and Insurance</option>
-  <option value="Business & Entrepreneurship">Business & Entrepreneurship</option>
-  <option value="Education & Learning">Education & Learning</option>
-  <option value="Health & Wellness">Health & Wellness</option>
-  <option value="Housing & Shelter">Housing & Shelter</option>
-  <option value="Science">Science</option>
-  <option value="IT & Communications">IT & Communications</option>
-  <option value="Skills & Employment">Skills & Employment</option>
-  <option value="Social welfare & Empowerment">Social welfare & Empowerment</option>
-  <option value="Sports & Culture">Sports & Culture</option>
-  <option value="Transport & Infrastructure">Transport & Infrastructure</option>
-  <option value="Travel & Tourism">Travel & Tourism</option>
-  <option value="Utility & Sanitation">Utility & Sanitation</option>
-  <option value="Women and Child">Women and Child</option>
-  <option value="Public Safety">Public Safety</option>
-  <option value="Law & Justice">Law & Justice</option>
-        </select>
+          <button className="sc-btn" type="submit">
+            <span>Check Schemes</span>
+            <span className="sc-btn-arrow">→</span>
+          </button>
 
-        <button type="submit">Check Schemes</button>
-
-      </form>
-
+        </form>
+      </div>
     </div>
   );
 }

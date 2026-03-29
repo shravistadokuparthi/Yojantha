@@ -1,74 +1,134 @@
-.schemes-container {
-  padding: 40px;
-  background: #f4f6fb;
-  min-height: 100vh;
-  animation: fadeIn 0.7s ease;
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+.sc-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+  max-width: 760px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── Heading ── */
+.sc-heading { }
+
+.sc-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  margin-bottom: 6px;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.sc-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.40);
+  line-height: 1.6;
 }
 
-.scheme-form {
-  background: white;
-  padding: 25px;
-  max-width: 700px;
-  margin: auto;
-  border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-  transition: 0.3s;
+/* ── Card ── */
+.sc-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 32px 30px;
+  backdrop-filter: blur(20px);
 }
 
-.scheme-form:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+/* ── Form Grid ── */
+.sc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-.scheme-form input,
-.scheme-form select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-   transition: 0.3s;
+/* ── Field ── */
+.sc-field { display: flex; flex-direction: column; }
+
+.sc-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.40);
+  margin-bottom: 7px;
 }
 
-.scheme-form input:focus,
-.scheme-form select:focus {
-  border: 1px solid #667eea;
-  box-shadow: 0 0 8px rgba(102,126,234,0.4);
+/* ── Input / Select ── */
+.sc-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
   outline: none;
-}
-
-.scheme-form button {
+  transition: border-color 0.2s, background 0.2s;
   width: 100%;
-  padding: 10px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 6px;
+}
+
+.sc-input::placeholder { color: rgba(255,255,255,0.20); }
+
+.sc-input:focus {
+  border-color: #6c3bff;
+  background: rgba(108,59,255,0.08);
+}
+
+.sc-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.scheme-form button:hover {
-  background: #4c5bd4;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+.sc-select option {
+  background: #16161f;
+  color: #fff;
 }
 
-.result {
-  background: white;
-  padding: 20px;
-  max-width: 500px;
-  margin: 20px auto;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+/* ── Submit Button ── */
+.sc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6c3bff, #a855f7);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(108,59,255,0.30);
+}
+
+.sc-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(108,59,255,0.45);
+}
+
+.sc-btn:active { transform: translateY(0); }
+
+.sc-btn-arrow {
+  font-size: 17px;
+  transition: transform 0.2s;
+}
+
+.sc-btn:hover .sc-btn-arrow { transform: translateX(4px); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .sc-grid { grid-template-columns: 1fr; }
+  .sc-card  { padding: 22px 18px; }
 }

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const Scheme = require("../models/Schemes");
 
-// ✅ FILTER SCHEMES
+//  FILTER SCHEMES
 router.get("/", async (req, res) => {
   try {
     const { type, level } = req.query;
@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// ✅ FETCH BY IDS (FINAL)
+// FETCH BY IDS 
 router.post("/byIds", async (req, res) => {
   try {
     const { ids } = req.body;

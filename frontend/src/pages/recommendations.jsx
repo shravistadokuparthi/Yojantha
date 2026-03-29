@@ -1,167 +1,159 @@
 import { useState, useEffect } from "react";
 import "./recommendations.css";
-import { useLocation } from "react-router-dom";
 
-function Recommendations() {
-
-  const location = useLocation();
-
-  const selectedType =
-    location.state?.schemeType || localStorage.getItem("schemeType");
-
-  const level = localStorage.getItem("level");
-
-  const [schemes, setSchemes] = useState([]);
+function Recommendations({ schemeType, level, navigateTo }) {
+  const [schemes, setSchemes]               = useState([]);
   const [selectedScheme, setSelectedScheme] = useState(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser]                     = useState(null);
 
-  
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
-
-        const data = await res.json();
-        setUser(data);
-
-      } catch (err) {
-        console.log(err);
-      }
+        setUser(await res.json());
+      } catch (err) { console.log(err); }
     };
-
     fetchUser();
   }, []);
 
-  
   useEffect(() => {
-    fetch(`http://localhost:5000/api/schemes?type=${selectedType}&level=${level}`)
+    if (!schemeType) return;
+    fetch(`http://localhost:5000/api/schemes?type=${schemeType}&level=${level || ""}`)
       .then(res => res.json())
       .then(data => {
         setSchemes(data);
-
         localStorage.setItem("eligibleCount", data.length);
       })
       .catch(err => console.log(err));
-  }, [selectedType, level]);
+  }, [schemeType, level]);
 
- 
   const handleInterested = async (schemeId) => {
-  try {
-    const res = await fetch("http://localhost:5000/api/apply/interested", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ schemeId })
-    });
-
-    await res.json();
-
-    // ✅ IMPORTANT: update UI instantly
-    setUser((prev) => ({
-      ...prev,
-      interestedSchemes: [...(prev?.interestedSchemes || []), schemeId]
-    }));
-
-    alert("Marked as Interested ⭐");
-
-  } catch (err) {
-    console.log(err);
-  }
-};
-
+    try {
+      await fetch("http://localhost:5000/api/apply/interested", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ schemeId })
+      });
+      setUser((prev) => ({
+        ...prev,
+        interestedSchemes: [...(prev?.interestedSchemes || []), schemeId]
+      }));
+      alert("Marked as Interested ⭐");
+    } catch (err) { console.log(err); }
+  };
 
   const handleApply = async (schemeId) => {
-  try {
-    const res = await fetch("http://localhost:5000/api/apply/apply", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ schemeId })
-    });
-
-    await res.json();
-
-    setUser((prev) => ({
-      ...prev,
-      appliedSchemes: [...(prev?.appliedSchemes || []), schemeId],
-      interestedSchemes: prev?.interestedSchemes?.filter(id => id !== schemeId)
-    }));
-
-    alert("Application Submitted ✅");
-
-  } catch (err) {
-    console.log(err);
-  }
-};
+    try {
+      await fetch("http://localhost:5000/api/apply/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ schemeId })
+      });
+      setUser((prev) => ({
+        ...prev,
+        appliedSchemes: [...(prev?.appliedSchemes || []), schemeId],
+        interestedSchemes: prev?.interestedSchemes?.filter(id => id !== schemeId)
+      }));
+      alert("Application Submitted ✅");
+    } catch (err) { console.log(err); }
+  };
 
   return (
-    <div className="recommend-container">
+    <div className="rec-root">
 
-      <h2 className="page-title">Recommended Schemes</h2>
+      {/* Page heading */}
+      <div className="rec-heading">
+        <h2 className="rec-title">Recommended Schemes</h2>
+        <p className="rec-sub">
+          {schemes.length > 0
+            ? `${schemes.length} scheme${schemes.length > 1 ? "s" : ""} matched your profile`
+            : "Looking for matching schemes…"}
+        </p>
+      </div>
 
       {schemes.length === 0 ? (
-        <p>No schemes found</p>
+        <div className="rec-empty">
+          <div className="rec-empty-icon">🔍</div>
+          <p>No schemes found for your selection.</p>
+        </div>
       ) : (
-        <div className="scheme-grid">
-          {schemes.map((scheme) => (
-            <div
-              key={scheme._id}
-              className="scheme-card"
-              onClick={() => setSelectedScheme(scheme)}
-            >
-              <h3>{scheme.scheme_name}</h3>
-              <p>{scheme.details?.substring(0, 100)}...</p>
+        <div className="rec-layout">
+
+          {/* ── Scheme Grid ── */}
+          <div className="rec-grid">
+            {schemes.map((scheme) => (
+              <div
+                key={scheme._id}
+                className={`rec-card ${selectedScheme?._id === scheme._id ? "rec-card-active" : ""}`}
+                onClick={() => setSelectedScheme(scheme)}
+              >
+                <h3 className="rec-card-name">{scheme.scheme_name}</h3>
+                <p className="rec-card-snippet">
+                  {scheme.details?.substring(0, 90)}…
+                </p>
+                <div className="rec-card-cta">View details →</div>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Detail Panel ── */}
+          {selectedScheme && (
+            <div className="rec-detail">
+              <div className="rec-detail-header">
+                <h3 className="rec-detail-title">{selectedScheme.scheme_name}</h3>
+              </div>
+
+              <div className="rec-detail-body">
+                <div className="rec-section">
+                  <div className="rec-section-label">Description</div>
+                  <p className="rec-section-text">{selectedScheme.details}</p>
+                </div>
+                <div className="rec-section">
+                  <div className="rec-section-label">Benefits</div>
+                  <p className="rec-section-text">{selectedScheme.benefits}</p>
+                </div>
+                <div className="rec-section">
+                  <div className="rec-section-label">Eligibility</div>
+                  <p className="rec-section-text">{selectedScheme.eligibility}</p>
+                </div>
+                <div className="rec-section">
+                  <div className="rec-section-label">Documents Required</div>
+                  <p className="rec-section-text">{selectedScheme.documents}</p>
+                </div>
+              </div>
+
+              <div className="rec-detail-actions">
+                <button
+                  className="rec-btn-outline"
+                  onClick={() => handleInterested(selectedScheme._id)}
+                  disabled={user?.interestedSchemes?.includes(selectedScheme._id)}
+                >
+                  {user?.interestedSchemes?.includes(selectedScheme._id)
+                    ? "⭐ Already Interested"
+                    : "⭐ Interested"}
+                </button>
+                <button
+                  className="rec-btn-primary"
+                  onClick={() => handleApply(selectedScheme._id)}
+                  disabled={user?.appliedSchemes?.includes(selectedScheme._id)}
+                >
+                  {user?.appliedSchemes?.includes(selectedScheme._id)
+                    ? "✅ Already Applied"
+                    : "Apply Now →"}
+                </button>
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
-
-      {selectedScheme && (
-        <div className="details-section">
-
-          <h3>{selectedScheme.scheme_name}</h3>
-          <p>{selectedScheme.details}</p>
-
-          <h4>Benefits</h4>
-          <p>{selectedScheme.benefits}</p>
-
-          <h4>Eligibility</h4>
-          <p>{selectedScheme.eligibility}</p>
-
-          <h4>Documents</h4>
-          <p>{selectedScheme.documents}</p>
-
-          {/* INTERESTED BUTTON */}
-          <button
-            onClick={() => handleInterested(selectedScheme._id)}
-            disabled={user?.interestedSchemes?.includes(selectedScheme._id)}
-          >
-            {user?.interestedSchemes?.includes(selectedScheme._id)
-              ? "Already Interested"
-              : " Interested"}
-          </button>
-
-          {/*  APPLY BUTTON */}
-          <button
-            onClick={() => handleApply(selectedScheme._id)}
-            disabled={user?.appliedSchemes?.includes(selectedScheme._id)}
-          >
-            {user?.appliedSchemes?.includes(selectedScheme._id)
-              ? " Already Applied"
-              : " Apply"}
-          </button>
-
-        </div>
-      )}
-
     </div>
   );
 }

@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ── root layout ── */
+.yj-root {
+  min-height: 100vh;
+  display: flex;
+  font-family: 'DM Sans', sans-serif;
+  background: #0a0a0f;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── animated background blobs ── */
+.yj-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  animation: yj-drift 10s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+.yj-blob-1 { width: 520px; height: 520px; background: #6c3bff; top: -120px; left: -100px; animation-delay: 0s; }
+.yj-blob-2 { width: 400px; height: 400px; background: #ff3b7a; bottom: -80px; right: -80px; animation-delay: -4s; }
+.yj-blob-3 { width: 280px; height: 280px; background: #00d4ff; top: 40%; left: 55%; animation-delay: -7s; }
+
+@keyframes yj-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 20px) scale(1.08); }
+}
+
+/* ── left panel ── */
+.yj-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 70px;
+  position: relative;
+  z-index: 1;
+}
+
+.yj-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 64px;
+}
+
+.yj-brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #6c3bff, #ff3b7a);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.yj-brand-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.yj-tagline {
+  font-family: 'Syne', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+}
+
+.yj-tagline span {
+  background: linear-gradient(90deg, #6c3bff, #ff3b7a, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.yj-sub {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.7;
+  max-width: 360px;
+}
+
+.yj-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 56px;
+}
+
+.yj-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.yj-stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── right panel ── */
+.yj-right {
+  width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── glass card ── */
+.yj-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  padding: 44px 40px;
+  backdrop-filter: blur(24px);
+  animation: yj-slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes yj-slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.yj-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.yj-card-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 32px;
+}
+
+/* ── form fields ── */
+.yj-field {
+  margin-bottom: 16px;
+}
+
+.yj-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.yj-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.yj-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.yj-input:focus {
+  border-color: #6c3bff;
+  background: rgba(108, 59, 255, 0.08);
+}
+
+/* ── error message ── */
+.yj-error {
+  font-size: 13px;
+  color: #ff6b8a;
+  background: rgba(255, 59, 122, 0.1);
+  border: 1px solid rgba(255, 59, 122, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+/* ── primary button ── */
+.yj-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6c3bff, #a855f7);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s;
+  margin-top: 4px;
+}
+
+.yj-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+.yj-btn:active { transform: translateY(0); }
+.yj-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ── ghost button ── */
+.yj-btn-ghost {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  margin-top: 10px;
+}
+
+.yj-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── forgot / inline links ── */
+.yj-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.yj-link {
+  font-size: 13px;
+  color: #a78bfa;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.yj-link:hover { color: #c4b5fd; }
+
+/* ── divider ── */
+.yj-divider {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.25);
+  margin: 20px 0;
+  position: relative;
+}
+
+.yj-divider::before,
+.yj-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.yj-divider::before { left: 0; }
+.yj-divider::after  { right: 0; }
+
+/* ── password strength bar ── */
+.yj-strength-wrap {
+  margin-top: 8px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.yj-strength-bar {
+  height: 3px;
+  flex: 1;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.3s;
+}
+
+.yj-strength-label {
+  font-size: 11px;
+  font-weight: 500;
+  min-width: 46px;
+  text-align: right;
+}
+
+/* ── responsive ── */
+@media (max-width: 860px) {
+  .yj-left  { display: none; }
+  .yj-right { width: 100%; padding: 24px; }
+}

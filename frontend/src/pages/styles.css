@@ -1,64 +1,66 @@
-/* Reset default spacing */
-body {
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ── Light Mode (Day Glass Theme - Professional) ── */
+:root {
+  /* Soft, clean grey-blue background */
+  --bg-app: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  
+  /* Glass card settings */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  
+  /* Text Colors */
+  --text-main: #102a43;
+  --text-muted: #486581;
+  
+  /* Official Blue Buttons */
+  --btn-bg: linear-gradient(135deg, #0284c7, #0369a1);
+  --btn-hover: linear-gradient(135deg, #0369a1, #075985);
+  --btn-text: #ffffff;
+}
+
+/* ── Dark Mode (Night Glass Theme - Professional) ── */
+[data-theme="dark"] {
+  /* Deep, rich slate background */
+  --bg-app: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  
+  /* Glass card settings */
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  
+  /* Text Colors */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  /* Official Blue Buttons */
+  --btn-bg: linear-gradient(135deg, #2563eb, #1d4ed8);
+  --btn-hover: linear-gradient(135deg, #1d4ed8, #1e40af);
+  --btn-text: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background: var(--bg-app);
+  background-attachment: fixed;
+  color: var(--text-main);
   min-height: 100vh;
-  justify-content: center;
-  align-items: center;
-}
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-/* Card style */
-.card {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Inputs */
-.input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-/* Button */
-.button {
-  width: 100%;
-  padding: 10px;
-  background: #667eea;
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.button:hover {
-  background: #5a67d8;
-}
-
-/* Link */
-.link {
-  display: block;
-  margin-top: 15px;
-  color: #667eea;
-  text-decoration: none;
-  font-weight: bold;
-}
-.glass {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.3);
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+  transition: background 0.3s ease, border 0.3s ease;
 }
