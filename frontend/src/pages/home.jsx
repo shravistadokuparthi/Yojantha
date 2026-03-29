@@ -15,13 +15,37 @@ function Home() {
 
 
   useEffect(() => {
+  const fetchVisitors = () => {
+    fetch("http://localhost:5000/api/visit?type=get")
+      .then(res => res.json())
+      .then(data => {
+        console.log("Visitors:", data);
+        setVisitors(data?.count || 0);
+      })
+      .catch(err => console.log(err));
+  };
+
+
+  fetchVisitors();
+
+
+  if (!sessionStorage.getItem("visited")) {
+    sessionStorage.setItem("visited", "true");
+
     fetch("http://localhost:5000/api/visit")
       .then(res => res.json())
       .then(data => setVisitors(data?.count || 0))
       .catch(err => console.log(err));
-  }, []);
+  }
 
-  // ✅ Fetch user stats (safe - no interval)
+
+  window.addEventListener("focus", fetchVisitors);
+
+  return () => {
+    window.removeEventListener("focus", fetchVisitors);
+  };
+}, []);
+  
   useEffect(() => {
     const fetchStats = async () => {
       try {

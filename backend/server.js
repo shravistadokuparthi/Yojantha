@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const fs = require("fs");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
@@ -32,10 +33,34 @@ app.listen(5000, () => {
   console.log("🚀 Server running on port 5000");
 });
 
-let visitorCount = 0;
+const FILE = "./count.json";
 
-// API to increase count
+let count = 0;
+
+
+try {
+  if (fs.existsSync(FILE)) {
+    const data = JSON.parse(fs.readFileSync(FILE, "utf-8"));
+    count = data.count || 0;
+  } else {
+    fs.writeFileSync(FILE, JSON.stringify({ count: 0 }));
+  }
+} catch (err) {
+  console.log("Error reading file:", err);
+  count = 0;
+}
+
+
 app.get("/api/visit", (req, res) => {
-  visitorCount++;
-  res.json({ count: visitorCount });
+  const type = req.query.type;
+
+  if (type === "get") {
+    return res.json({ count });
+  }
+
+  count++;
+
+  fs.writeFileSync(FILE, JSON.stringify({ count }));
+
+  res.json({ count });
 });
