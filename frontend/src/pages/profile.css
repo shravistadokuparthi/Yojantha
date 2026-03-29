@@ -1,111 +1,216 @@
-.profile-container {
-  padding: 40px;
-  background: #f4f6fb;
-  min-height: 100vh;
-  animation: fadeIn 0.7s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-
-h2 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.status {
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: bold;
-  color: green;
-}
-
-.card {
-  background: white;
-  padding: 25px;
-  margin: 20px auto;
-  max-width: 750px;
-  border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-  transition: 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
-}
-
-.card input {
+/* ── layout wrapper — fits inside the dashboard content area ── */
+.yj-profile-content {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  transition: 0.3s;
-}
-.card input:focus {
-  border: 1px solid #667eea;
-  box-shadow: 0 0 8px rgba(102,126,234,0.4);
-  outline: none;
-}
-
-.card button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.stats {
+  max-width: 760px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.stat-card {
-  background: #667eea;
-  color: white;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  width: 200px;
+/* ── profile header row ── */
+.yj-profile-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.progress-bar {
-  background: #eee;
-  border-radius: 10px;
-  overflow: hidden;
-  height: 20px;
-  margin-top: 10px;
+.yj-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.6px;
+  margin-bottom: 8px;
 }
 
-.progress-fill {
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  height: 100%;
-  text-align: center;
-  color: white;
+.yj-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  animation: loadProgress 1.5s ease;
+  font-weight: 500;
+  color: #34d399;
+  background: rgba(52,211,153,0.10);
+  border: 1px solid rgba(52,211,153,0.20);
+  padding: 4px 14px;
+  border-radius: 99px;
 }
 
-@keyframes loadProgress {
-  from { width: 0; }
-}
-
-.logout {
-  background: #ff4d4f;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  color: white;
+/* ── danger button (logout) ── */
+.yj-btn-danger {
+  padding: 10px 22px;
+  background: rgba(255,59,122,0.10);
+  border: 1px solid rgba(255,59,122,0.25);
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff6b8a;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
 }
 
-.logout:hover {
-  background: #d9363e;
+.yj-btn-danger:hover {
+  background: rgba(255,59,122,0.18);
+  border-color: rgba(255,59,122,0.45);
+  transform: translateY(-1px);
+}
+
+/* ── card ── */
+.yj-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 28px 30px;
+  backdrop-filter: blur(20px);
+}
+
+/* ── card top row ── */
+.yj-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.yj-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.yj-card-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 20px;
+}
+
+/* ── 2-col grid for fields ── */
+.yj-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── field ── */
+.yj-field { display: flex; flex-direction: column; }
+
+/* ── label ── */
+.yj-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── input ── */
+.yj-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.yj-input::placeholder { color: rgba(255,255,255,0.20); }
+
+.yj-input:focus {
+  border-color: #6c3bff;
+  background: rgba(108,59,255,0.08);
+}
+
+.yj-input:disabled {
+  opacity: 0.55;
+  cursor: default;
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* ── primary button ── */
+.yj-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6c3bff, #a855f7);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s;
+  margin-top: 4px;
+}
+
+.yj-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+.yj-btn:active { transform: translateY(0); }
+.yj-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ── ghost button ── */
+.yj-btn-ghost {
+  padding: 13px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.yj-btn-ghost:hover {
+  border-color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.85);
+}
+
+.yj-btn-small { padding: 8px 18px; font-size: 12px; }
+
+/* ── password strength ── */
+.yj-strength-wrap {
+  margin-top: 8px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.yj-strength-bar {
+  height: 3px;
+  flex: 1;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.08);
+  transition: background 0.3s;
+}
+
+.yj-strength-label {
+  font-size: 11px;
+  font-weight: 500;
+  min-width: 46px;
+  text-align: right;
+}
+
+/* ── responsive ── */
+@media (max-width: 600px) {
+  .yj-grid { grid-template-columns: 1fr; }
+  .yj-card { padding: 20px 18px; }
 }

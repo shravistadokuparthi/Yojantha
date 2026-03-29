@@ -2,38 +2,125 @@ import { useState } from "react";
 import Home from "./home";
 import Profile from "./profile";
 import Schemes from "./schemes";
+import Recommendations from "./recommendations";
+import MySchemes from "./MySchemes";
 import "./dashboard.css";
+
+const NAV_ITEMS = [
+  { id: "home",    label: "Home",    icon: "🏠" },
+  { id: "schemes", label: "Schemes", icon: "📋" },
+  { id: "profile", label: "Profile", icon: "👤" },
+];
 
 function Dashboard() {
   const [active, setActive] = useState("home");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const renderContent = () => {
-    if (active === "home") return <Home />;
-    if (active === "profile") return <Profile />;
-    if (active === "schemes") return <Schemes />;
+  // State passed from Schemes → Recommendations
+  const [recParams, setRecParams] = useState({ schemeType: "", level: "" });
+  // State passed from Home → MySchemes
+  const [mySchemesType, setMySchemesType] = useState("interested");
+
+  const navigateTo = (page, params = {}) => {
+    if (page === "recommendations") {
+      setRecParams(params);
+    } else if (page === "myschemes") {
+      setMySchemesType(params.type || "interested");
+    }
+    setActive(page);
+    setSidebarOpen(false);
   };
 
+  const renderContent = () => {
+    if (active === "home")            return <Home navigateTo={navigateTo} />;
+    if (active === "profile")         return <Profile />;
+    if (active === "schemes")         return <Schemes navigateTo={navigateTo} />;
+    if (active === "recommendations") return <Recommendations schemeType={recParams.schemeType} level={recParams.level} navigateTo={navigateTo} />;
+    if (active === "myschemes")       return <MySchemes type={mySchemesType} navigateTo={navigateTo} />;
+  };
+
+  // Label shown in topbar — covers internal panels too
+  const PAGE_LABELS = {
+    home:            { icon: "🏠", label: "Home" },
+    schemes:         { icon: "📋", label: "Schemes" },
+    profile:         { icon: "👤", label: "Profile" },
+    recommendations: { icon: "✨", label: "Recommended Schemes" },
+    myschemes:       { icon: mySchemesType === "applied" ? "✅" : "⭐", label: mySchemesType === "applied" ? "Applied Schemes" : "Interested Schemes" },
+  };
+
+  const currentPage = PAGE_LABELS[active] || PAGE_LABELS.home;
+
   return (
-    <div className="dashboard">
+    <div className="dash-root">
+      {/* Ambient background */}
+      <div className="dash-blob dash-blob-1" />
+      <div className="dash-blob dash-blob-2" />
+      <div className="dash-blob dash-blob-3" />
 
-      {/* Header Banner */}
-      <div className="header">
-        <h1>YOJANTA PORTAL</h1>
-        <p>Government Scheme Management System</p>
+      {/* ── Sidebar ── */}
+      <aside className={`dash-sidebar ${sidebarOpen ? "open" : ""}`}>
+        {/* Brand */}
+        <div className="dash-brand">
+          <div className="dash-brand-icon">🏛️</div>
+          <div className="dash-brand-text">
+            <span className="dash-brand-name">Yojanta</span>
+            <span className="dash-brand-sub">Portal</span>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav className="dash-nav">
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              className={`dash-nav-btn ${active === item.id ? "active" : ""}`}
+              onClick={() => { setActive(item.id); setSidebarOpen(false); }}
+            >
+              <span className="dash-nav-icon">{item.icon}</span>
+              <span className="dash-nav-label">{item.label}</span>
+              {active === item.id && <span className="dash-nav-pip" />}
+            </button>
+          ))}
+        </nav>
+
+        {/* Footer tag */}
+        <div className="dash-sidebar-footer">
+          <span>Gov. Scheme Management</span>
+        </div>
+      </aside>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="dash-overlay" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* ── Main area ── */}
+      <div className="dash-main">
+        {/* Top bar */}
+        <header className="dash-topbar">
+          <button
+            className="dash-hamburger"
+            onClick={() => setSidebarOpen((o) => !o)}
+            aria-label="Toggle menu"
+          >
+            <span /><span /><span />
+          </button>
+
+          <div className="dash-topbar-title">
+            {currentPage.icon}{" "}{currentPage.label}
+          </div>
+
+          <div className="dash-topbar-badge">
+            <span className="dash-dot" />
+            Live
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="dash-content" key={active}>
+          {renderContent()}
+        </main>
       </div>
-
-      {/* Navigation Menu */}
-      <div className="navbar">
-        <button onClick={() => setActive("home")}>Home</button>
-        <button onClick={() => setActive("profile")}>Profile</button>
-        <button onClick={() => setActive("schemes")}>Schemes</button>
-      </div>
-
-      {/* Content */}
-      <div className="main-content">
-        {renderContent()}
-      </div>
-
     </div>
   );
 }

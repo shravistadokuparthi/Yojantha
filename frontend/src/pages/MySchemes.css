@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+.ms-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+}
+
+/* ── Header ── */
+.ms-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.ms-icon { font-size: 22px; }
+
+.ms-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.ms-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.38);
+}
+
+/* ── Skeletons ── */
+.ms-skeletons { display: flex; flex-direction: column; gap: 10px; }
+
+.ms-skeleton {
+  height: 90px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  animation: ms-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes ms-shimmer {
+  0%,100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
+
+/* ── Empty ── */
+.ms-empty {
+  text-align: center;
+  padding: 56px 24px;
+  color: rgba(255,255,255,0.30);
+}
+
+.ms-empty-icon { font-size: 42px; margin-bottom: 14px; opacity: 0.5; }
+.ms-empty p { font-size: 14px; line-height: 1.6; }
+
+/* ── List ── */
+.ms-list { display: flex; flex-direction: column; gap: 10px; }
+
+.ms-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 20px 22px;
+  backdrop-filter: blur(14px);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: border-color 0.2s, transform 0.15s;
+  animation: ms-fade-up 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.ms-card:hover {
+  border-color: rgba(108,59,255,0.30);
+  transform: translateX(4px);
+}
+
+@keyframes ms-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ms-card-left { flex: 1; }
+
+.ms-card-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  margin-bottom: 8px;
+  background: rgba(108,59,255,0.15);
+  color: #a78bfa;
+  font-family: 'Syne', sans-serif;
+}
+
+.ms-card-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.ms-card-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.65;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .ms-card { padding: 16px; }
+  .ms-title { font-size: 20px; }
+}

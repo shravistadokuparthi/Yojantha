@@ -5,14 +5,8 @@ import "./home.css";
 function Home() {
   const navigate = useNavigate();
 
-  // Stats state
-  const [stats, setStats] = useState({
-    eligible: 0,
-    applied: 0
-  });
-
+  const [stats, setStats] = useState({ eligible: 0, applied: 0 });
   const [visitors, setVisitors] = useState(0);
-
 
   useEffect(() => {
     fetch("http://localhost:5000/api/visit")
@@ -21,87 +15,101 @@ function Home() {
       .catch(err => console.log(err));
   }, []);
 
-  // Fetch user stats 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
-
         const user = await res.json();
-
         setStats({
-          applied: user.appliedSchemes?.length || 0,
+          applied:  user.appliedSchemes?.length  || 0,
           eligible: user.interestedSchemes?.length || 0
         });
-
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) { console.log(err); }
     };
-
     fetchStats();
   }, []);
 
-  return (
-    <div className="home-container">
+  const updates = [
+    "New Women Welfare Scheme launched",
+    "Scholarship deadline extended to Dec 31",
+    "Health scheme enrollment now open",
+  ];
 
-      {/* Hero Section */}
-      <div className="card">
-        <h1>Welcome to Yojanta Portal</h1>
-        <p>
-          Discover government schemes tailored to your needs.
-          Check eligibility, apply easily, and track your applications.
-        </p>
+  return (
+    <div className="home-root">
+
+      {/* ── Hero ── */}
+      <div className="home-hero">
+        <div className="home-hero-text">
+          <p className="home-eyebrow">🏛️ Government of India</p>
+          <h1 className="home-headline">
+            Welcome to<br />
+            <span className="home-grad">Yojanta Portal</span>
+          </h1>
+          <p className="home-sub">
+            Discover schemes tailored to your profile. Check eligibility,
+            apply easily, and track your applications — all in one place.
+          </p>
+        </div>
+        <div className="home-hero-stat">
+          <div className="home-visitor-pill">
+            <span className="home-vis-dot" />
+            <span>{visitors.toLocaleString()} visitors today</span>
+          </div>
+        </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="stats">
-
+      {/* ── Stat Cards ── */}
+      <div className="home-stats-grid">
         <div
-          className="stat-card"
+          className="home-stat-card home-stat-purple"
           onClick={() => navigate("/myschemes?type=interested")}
         >
-          <h4>Eligible Schemes</h4>
-          <p>{stats.eligible}</p>
+          <div className="home-stat-icon">⭐</div>
+          <div className="home-stat-num">{stats.eligible}</div>
+          <div className="home-stat-label">Interested Schemes</div>
+          <div className="home-stat-action">View all →</div>
         </div>
 
         <div
-          className="stat-card"
+          className="home-stat-card home-stat-green"
           onClick={() => navigate("/myschemes?type=applied")}
         >
-          <h4>Applied</h4>
-          <p>{stats.applied}</p>
+          <div className="home-stat-icon">✅</div>
+          <div className="home-stat-num">{stats.applied}</div>
+          <div className="home-stat-label">Applied Schemes</div>
+          <div className="home-stat-action">View all →</div>
         </div>
-
       </div>
 
-      {/* Visitor Count */}
-      <div className="card">
-        <h3>Total Visitors</h3>
-        <p>{visitors}</p>
+      {/* ── How It Works ── */}
+      <div className="home-section-title">How It Works</div>
+      <div className="home-steps">
+        {[
+          { num: "01", title: "Enter Details",      desc: "Fill in your personal & financial info." },
+          { num: "02", title: "Get Recommendations", desc: "We match you with eligible schemes." },
+          { num: "03", title: "Apply",              desc: "Submit your application in one click." },
+          { num: "04", title: "Track Status",       desc: "Monitor progress on your dashboard." },
+        ].map((s) => (
+          <div className="home-step" key={s.num}>
+            <div className="home-step-num">{s.num}</div>
+            <div className="home-step-title">{s.title}</div>
+            <div className="home-step-desc">{s.desc}</div>
+          </div>
+        ))}
       </div>
 
-      {/* Updates */}
-      <div className="card">
-        <h3>Latest Updates</h3>
-        <ul>
-          <li>New Women Welfare Scheme launched</li>
-          <li>Scholarship deadline extended</li>
-          <li>Health scheme enrollment open</li>
-        </ul>
-      </div>
-
-      {/* How It Works */}
-      <div className="card">
-        <h3>How It Works</h3>
-        <p>
-          1️⃣ Enter your details → 2️⃣ Get recommended schemes → 
-          3️⃣ Apply → 4️⃣ Track status
-        </p>
+      {/* ── Latest Updates ── */}
+      <div className="home-section-title">Latest Updates</div>
+      <div className="home-updates">
+        {updates.map((u, i) => (
+          <div className="home-update-item" key={i}>
+            <span className="home-update-dot" />
+            <span>{u}</span>
+          </div>
+        ))}
       </div>
 
     </div>
