@@ -22,12 +22,12 @@ function Schemes({ navigateTo }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    navigateTo("recommendations", {
-      schemeType: formData.schemeType,
-      level: formData.level,
-    });
-  };
+  e.preventDefault();
+
+ navigateTo("recommendations", {
+  userProfile: formData
+});
+};
 
   return (
     <div className="sc-root">

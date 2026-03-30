@@ -31,18 +31,7 @@ function Home() {
       .then(data => setVisitors(data?.count || 0))
       .catch(err => console.log(err));
   }
-
-<<<<<<< HEAD
-
-  window.addEventListener("focus", fetchVisitors);
-
-  return () => {
-    window.removeEventListener("focus", fetchVisitors);
-  };
 }, []);
-  
-=======
->>>>>>> ebcf4e5430538a4a3048badd4614cd3afdf9f3dd
   useEffect(() => {
     const fetchStats = async () => {
       try {
