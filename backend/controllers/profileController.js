@@ -115,3 +115,43 @@ exports.updatePassword = async (req, res) => {
   }
 
 };
+
+exports.addInterestedScheme = async (req, res) => {
+  try {
+    const { schemeId } = req.body;
+    if (!schemeId) {
+      return res.status(400).json({ message: "Scheme ID is required" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user.interestedSchemes.includes(schemeId) && !user.appliedSchemes.includes(schemeId)) {
+      user.interestedSchemes.push(schemeId);
+      await user.save();
+    }
+
+    res.json({ message: "Scheme added to interested list" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.addAppliedScheme = async (req, res) => {
+  try {
+    const { schemeId } = req.body;
+    if (!schemeId) {
+      return res.status(400).json({ message: "Scheme ID is required" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user.appliedSchemes.includes(schemeId)) {
+      user.appliedSchemes.push(schemeId);
+      // Remove from interested if present
+      user.interestedSchemes = user.interestedSchemes.filter(id => id !== schemeId);
+      await user.save();
+    }
+
+    res.json({ message: "Scheme added to applied list" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -6,6 +6,64 @@ function Recommendations({ userProfile, navigateTo }) {
   const [selectedScheme, setSelectedScheme] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const handleInterested = async (schemeId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/add-interested", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ schemeId }),
+      });
+
+      if (res.ok) {
+        alert("Added to interested schemes!");
+        window.dispatchEvent(new Event('profileUpdated'));
+      } else {
+        alert("Failed to add");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred");
+    }
+  };
+
+  const handleApply = async (schemeId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/add-applied", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ schemeId }),
+      });
+
+      if (res.ok) {
+        alert("Applied successfully!");
+        window.dispatchEvent(new Event('profileUpdated'));
+      } else {
+        alert("Failed to apply");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred");
+    }
+  };
+
   useEffect(() => {
     const fetchAI = async () => {
       try {
@@ -101,6 +159,9 @@ function Recommendations({ userProfile, navigateTo }) {
               <>
                 <div className="rec-detail-header">
                   <h3 className="rec-detail-title">{selectedScheme.name}</h3>
+                  {selectedScheme.category && (
+                    <span className="rec-detail-tag">{selectedScheme.category}</span>
+                  )}
                 </div>
 
                 <div className="rec-detail-body">
@@ -108,19 +169,54 @@ function Recommendations({ userProfile, navigateTo }) {
                     <div className="rec-section-label">Why this scheme suits you</div>
                     <p className="rec-section-text">{selectedScheme.reason}</p>
                   </div>
+
+                  {selectedScheme.details && (
+                    <div className="rec-section">
+                      <div className="rec-section-label">Scheme summary</div>
+                      <p className="rec-section-text">{selectedScheme.details}</p>
+                    </div>
+                  )}
+
+                  {selectedScheme.eligibility && (
+                    <div className="rec-section">
+                      <div className="rec-section-label">Eligibility</div>
+                      <p className="rec-section-text">{selectedScheme.eligibility}</p>
+                    </div>
+                  )}
+
+                  {selectedScheme.benefits && (
+                    <div className="rec-section">
+                      <div className="rec-section-label">Benefits</div>
+                      <p className="rec-section-text">{selectedScheme.benefits}</p>
+                    </div>
+                  )}
+
+                  {selectedScheme.documents && (
+                    <div className="rec-section">
+                      <div className="rec-section-label">Documents required</div>
+                      <p className="rec-section-text">{selectedScheme.documents}</p>
+                    </div>
+                  )}
+
+                  {selectedScheme.application && (
+                    <div className="rec-section">
+                      <div className="rec-section-label">How to apply</div>
+                      <p className="rec-section-text">{selectedScheme.application}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="rec-detail-actions">
                   <button
                     className="rec-btn-outline"
-                    onClick={() => alert("Interest recorded!")}
+                    onClick={() => handleInterested(selectedScheme.id)}
                   >
                     ⭐ Interested
                   </button>
 
                   <button
                     className="rec-btn-primary"
-                    onClick={() => alert("Redirecting to application...")}
+                    onClick={() => handleApply(selectedScheme.id)}
                   >
                     Apply Now →
                   </button>

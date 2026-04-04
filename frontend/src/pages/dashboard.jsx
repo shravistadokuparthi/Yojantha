@@ -17,7 +17,7 @@ function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // State passed from Schemes → Recommendations
-  const [recParams, setRecParams] = useState({ schemeType: "", level: "" });
+  const [recParams, setRecParams] = useState({});
   // State passed from Home → MySchemes
   const [mySchemesType, setMySchemesType] = useState("interested");
 
@@ -35,7 +35,7 @@ function Dashboard() {
     if (active === "home")            return <Home navigateTo={navigateTo} />;
     if (active === "profile")         return <Profile />;
     if (active === "schemes")         return <Schemes navigateTo={navigateTo} />;
-    if (active === "recommendations") return <Recommendations schemeType={recParams.schemeType} level={recParams.level} navigateTo={navigateTo} />;
+    if (active === "recommendations") return <Recommendations userProfile={recParams.userProfile} navigateTo={navigateTo} />;
     if (active === "myschemes")       return <MySchemes type={mySchemesType} navigateTo={navigateTo} />;
   };
 

@@ -6,7 +6,9 @@ const auth = require("../middleware/authMiddleware");
 const { 
   getProfile, 
   updateProfile, 
-  updatePassword 
+  updatePassword,
+  addInterestedScheme,
+  addAppliedScheme
 } = require("../controllers/profileController");
 
 router.get("/profile", auth, getProfile);
@@ -14,5 +16,9 @@ router.get("/profile", auth, getProfile);
 router.put("/profile", auth, updateProfile);
 
 router.put("/update-password", auth, updatePassword);
+
+router.post("/add-interested", auth, addInterestedScheme);
+
+router.post("/add-applied", auth, addAppliedScheme);
 
 module.exports = router;

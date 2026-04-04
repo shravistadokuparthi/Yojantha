@@ -32,20 +32,29 @@ function Home() {
       .catch(err => console.log(err));
   }
 }, []);
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/user/profile", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      const user = await res.json();
+      setStats({
+        applied:  user.appliedSchemes?.length  || 0,
+        eligible: user.interestedSchemes?.length || 0
+      });
+    } catch (err) { console.log(err); }
+  };
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/user/profile", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        });
-        const user = await res.json();
-        setStats({
-          applied:  user.appliedSchemes?.length  || 0,
-          eligible: user.interestedSchemes?.length || 0
-        });
-      } catch (err) { console.log(err); }
-    };
     fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      fetchStats();
+    };
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    return () => window.removeEventListener('profileUpdated', handleProfileUpdate);
   }, []);
 
   const updates = [
