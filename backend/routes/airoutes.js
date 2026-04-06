@@ -37,7 +37,16 @@ const scoreScheme = (scheme, userProfile) => {
 };
 
 const getCandidateSchemes = (userProfile, schemes) => {
-  const scored = schemes
+  // First filter by level if specified
+  let filteredSchemes = schemes;
+  if (userProfile.level === "Central") {
+    filteredSchemes = schemes.filter(scheme => scheme.level === "Central");
+  } else if (userProfile.level === "State") {
+    filteredSchemes = schemes.filter(scheme => scheme.level === "State");
+  }
+  // If level is "Any" or not set, use all schemes
+
+  const scored = filteredSchemes
     .map((scheme) => ({ scheme, score: scoreScheme(scheme, userProfile) }))
     .sort((a, b) => b.score - a.score);
 
@@ -46,7 +55,7 @@ const getCandidateSchemes = (userProfile, schemes) => {
     return candidates.slice(0, 20);
   }
 
-  return schemes.slice(0, 30);
+  return filteredSchemes.slice(0, 30);
 };
 
 const buildPrompt = (userProfile, schemes) => {

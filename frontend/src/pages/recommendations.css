@@ -120,6 +120,33 @@
   font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.4px;
+  margin-bottom: 8px;
+}
+
+.rec-detail-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rec-detail-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(108,59,255,0.15);
+  border: 1px solid rgba(108,59,255,0.25);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #c4b5fd;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Syne', sans-serif;
+}
+
+.rec-tag-state {
+  background: rgba(34,197,94,0.15);
+  border-color: rgba(34,197,94,0.25);
+  color: #bbf7d0;
 }
 
 .rec-detail-body {

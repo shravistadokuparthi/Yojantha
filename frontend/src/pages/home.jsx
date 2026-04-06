@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "./home.css";
 
-function Home() {
-  const navigate = useNavigate();
+function Home({ navigateTo }) {
 
   const [stats, setStats] = useState({ eligible: 0, applied: 0 });
   const [visitors, setVisitors] = useState(0);
@@ -91,7 +89,7 @@ function Home() {
       <div className="home-stats-grid">
         <div
           className="home-stat-card home-stat-purple"
-          onClick={() => navigate("/myschemes?type=interested")}
+          onClick={() => navigateTo("myschemes", { type: "interested" })}
         >
           <div className="home-stat-icon">⭐</div>
           <div className="home-stat-num">{stats.eligible}</div>
@@ -101,7 +99,7 @@ function Home() {
 
         <div
           className="home-stat-card home-stat-green"
-          onClick={() => navigate("/myschemes?type=applied")}
+          onClick={() => navigateTo("myschemes", { type: "applied" })}
         >
           <div className="home-stat-icon">✅</div>
           <div className="home-stat-num">{stats.applied}</div>

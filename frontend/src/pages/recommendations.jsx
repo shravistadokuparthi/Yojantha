@@ -26,6 +26,7 @@ function Recommendations({ userProfile, navigateTo }) {
       if (res.ok) {
         alert("Added to interested schemes!");
         window.dispatchEvent(new Event('profileUpdated'));
+        navigateTo("myschemes", { type: "interested" });
       } else {
         alert("Failed to add");
       }
@@ -55,6 +56,7 @@ function Recommendations({ userProfile, navigateTo }) {
       if (res.ok) {
         alert("Applied successfully!");
         window.dispatchEvent(new Event('profileUpdated'));
+        navigateTo("myschemes", { type: "applied" });
       } else {
         alert("Failed to apply");
       }
@@ -159,9 +161,14 @@ function Recommendations({ userProfile, navigateTo }) {
               <>
                 <div className="rec-detail-header">
                   <h3 className="rec-detail-title">{selectedScheme.name}</h3>
-                  {selectedScheme.category && (
-                    <span className="rec-detail-tag">{selectedScheme.category}</span>
-                  )}
+                  <div className="rec-detail-tags">
+                    {selectedScheme.category && (
+                      <span className="rec-detail-tag">{selectedScheme.category}</span>
+                    )}
+                    {selectedScheme.state && (
+                      <span className="rec-detail-tag rec-tag-state">{selectedScheme.state}</span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="rec-detail-body">

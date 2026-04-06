@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
     default: ""
   },
 
+  state: {
+    type: String,
+    default: ""
+  },
+
   dob: {
     type: String,
     default: ""

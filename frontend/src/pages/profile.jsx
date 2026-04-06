@@ -4,7 +4,15 @@ import "./profile.css";
 
 /* PASSWORD REGEX */
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
-
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+  "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Puducherry"
+];
 const getPasswordStrength = (password) => {
   if (!password) return "";
   if (passwordRegex.test(password)) return "Strong";
@@ -23,7 +31,7 @@ function Profile() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [user, setUser] = useState({
-    name: "", email: "", mobile: "", place: "", dob: "", gender: ""
+    name: "", email: "", mobile: "", place: "", state: "", dob: "", gender: ""
   });
 
   const [oldPassword, setOldPassword]       = useState("");
@@ -46,6 +54,7 @@ function Profile() {
           email:  data.email  || "",
           mobile: data.mobile || "",
           place:  data.city   || "",
+          state:  data.state  || "",
           dob:    data.dob    || "",
           gender: data.gender || ""
         });
@@ -68,7 +77,7 @@ function Profile() {
           Authorization: "Bearer " + localStorage.getItem("token")
         },
         body: JSON.stringify({
-          mobile: user.mobile, city: user.place,
+          mobile: user.mobile, city: user.place, state: user.state,
           dob: user.dob, gender: user.gender
         })
       });
@@ -163,6 +172,15 @@ function Profile() {
           <div className="yj-field">
             <label className="yj-label">City</label>
             <input className="yj-input" name="place" value={user.place} onChange={handleChange} disabled={!editing} />
+          </div>
+          <div className="yj-field">
+            <label className="yj-label">State</label>
+            <select className="yj-input" name="state" value={user.state} onChange={handleChange} disabled={!editing}>
+              <option value="">Select State</option>
+              {INDIAN_STATES.map((state) => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
           </div>
           <div className="yj-field">
             <label className="yj-label">Date of Birth</label>
