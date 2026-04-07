@@ -14,7 +14,7 @@ const SCHEME_TYPES = [
 
 function Schemes({ navigateTo }) {
   const [formData, setFormData] = useState({
-    name: "", age: "", income: "", category: "", level: "", schemeType: ""
+    name: "", age: "", income: "", category: "", level: "", schemeType: "", textInput: ""
   });
 
   const handleChange = (e) => {
@@ -22,12 +22,25 @@ function Schemes({ navigateTo }) {
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
- navigateTo("recommendations", {
-  userProfile: formData
-});
-};
+    const hasTextInput = formData.textInput.trim().length > 0;
+    const hasStructuredData =
+      formData.name.trim() !== "" &&
+      formData.age.trim() !== "" &&
+      formData.income.trim() !== "" &&
+      formData.category.trim() !== "" &&
+      formData.schemeType.trim() !== "";
+
+    if (!hasTextInput && !hasStructuredData) {
+      alert("Please provide either your profile details or a short text description of what you're looking for.");
+      return;
+    }
+
+    navigateTo("recommendations", {
+      userProfile: formData
+    });
+  };
 
   return (
     <div className="sc-root">
@@ -48,7 +61,7 @@ function Schemes({ navigateTo }) {
               <label className="sc-label">Full Name</label>
               <input className="sc-input" type="text" name="name"
                 placeholder="Enter your name"
-                value={formData.name} onChange={handleChange} required />
+                value={formData.name} onChange={handleChange} />
             </div>
 
             {/* Age */}
@@ -56,7 +69,7 @@ function Schemes({ navigateTo }) {
               <label className="sc-label">Age</label>
               <input className="sc-input" type="number" name="age"
                 placeholder="Your age"
-                value={formData.age} onChange={handleChange} required />
+                value={formData.age} onChange={handleChange} />
             </div>
 
             {/* Income */}
@@ -64,7 +77,7 @@ function Schemes({ navigateTo }) {
               <label className="sc-label">Annual Income (₹)</label>
               <input className="sc-input" type="number" name="income"
                 placeholder="e.g. 250000"
-                value={formData.income} onChange={handleChange} required />
+                value={formData.income} onChange={handleChange} />
             </div>
 
             {/* Category */}
@@ -72,7 +85,7 @@ function Schemes({ navigateTo }) {
               <label className="sc-label">Category</label>
               <input className="sc-input" type="text" name="category"
                 placeholder="SC / ST / OBC / General"
-                value={formData.category} onChange={handleChange} required />
+                value={formData.category} onChange={handleChange} />
             </div>
 
             {/* Level */}
@@ -90,13 +103,27 @@ function Schemes({ navigateTo }) {
             <div className="sc-field">
               <label className="sc-label">Scheme Type</label>
               <select className="sc-input sc-select" name="schemeType"
-                value={formData.schemeType} onChange={handleChange} required>
+                value={formData.schemeType} onChange={handleChange}>
                 <option value="">Select Scheme Type</option>
                 {SCHEME_TYPES.map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="sc-or-separator"><span>OR</span></div>
+
+          <div className="sc-field sc-field-full">
+            <label className="sc-label">Describe your need</label>
+            <textarea
+              className="sc-input sc-textarea"
+              name="textInput"
+              placeholder="Write your need in plain text, for example: 'I am a low-income woman seeking education support for skill development.'"
+              value={formData.textInput}
+              onChange={handleChange}
+            />
+            <p className="sc-hint">You can skip the structured fields above if you want recommendations based on your own text.</p>
           </div>
 
           <button className="sc-btn" type="submit">
