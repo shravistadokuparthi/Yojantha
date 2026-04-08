@@ -133,10 +133,6 @@ nodemon-Automatically restart backend server during development
 - Schemes(scheme_id,scheme_name,category,dept,min_income,max_income,min_age,max_age,deadline,documents,gender)
 - OptedScheme(user_id,scheme_id,applied_date,status(opted/not))
 
-## Suggestions:
-- use the apis for getting the data of schemes
-- make a strong password ..
-- explore git changes option ..
 - notification alert of chosen language
 - visitor count(time spent by user) 
 
