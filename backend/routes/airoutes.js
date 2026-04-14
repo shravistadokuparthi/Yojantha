@@ -127,95 +127,61 @@ router.post("/recommend", async (req, res) => {
   try {
     const { userProfile } = req.body;
 
-    if (!userProfile) {
-      return res.status(400).json({ error: "User profile is required" });
-    }
-
     const allSchemes = await Scheme.find().lean();
-    if (!allSchemes || allSchemes.length === 0) {
-      return res.json([
-        {
-          name: "No Data Found",
-          reason: "Your database is empty. Please upload schemes."
-        }
-      ]);
-    }
 
-    const candidateSchemes = getCandidateSchemes(userProfile, allSchemes);
-    const schemesForLLM = candidateSchemes.length > 0 ? candidateSchemes : allSchemes.slice(0, 30);
+    if (!allSchemes.length) return res.json([]);
 
-    if (!process.env.GEMINI_API_KEY) {
-      const fallback = await fallbackRecommendations(userProfile, allSchemes);
-      return res.json(fallback);
-    }
+    const textInput = (userProfile.textInput || "").toLowerCase();
 
-    const prompt = buildPrompt(userProfile, schemesForLLM);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // 🔥 STEP 1: SIMPLE MATCHING (NO STRICT FILTER)
+    const scored = allSchemes.map((scheme) => {
+      let score = 0;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let text = response.text();
+      const text = `
+        ${scheme.scheme_name}
+        ${scheme.eligibility}
+        ${scheme.details}
+        ${scheme.benefits}
+        ${scheme.tags}
+      `.toLowerCase();
 
-    console.log("🔍 Gemini raw output:\n", text);
-    text = text.replace(/```json|```|`/g, "").trim();
+      if (userProfile.category && text.includes(userProfile.category.toLowerCase())) score += 3;
+      if (userProfile.state && text.includes(userProfile.state.toLowerCase())) score += 3;
+      if (userProfile.gender && text.includes(userProfile.gender.toLowerCase())) score += 2;
 
-    let recommendations;
-    try {
-      recommendations = JSON.parse(text);
-    } catch (parseError) {
-      console.error("❌ JSON parse error:", parseError.message);
-      console.error("Raw output:\n", text);
-      const fallback = await fallbackRecommendations(userProfile, allSchemes);
-      return res.json(fallback);
-    }
+      if (text.includes("student") || text.includes("education")) score += 2;
 
-    if (!Array.isArray(recommendations)) {
-      recommendations = [recommendations];
-    }
+      if (textInput && text.includes(textInput)) score += 5;
 
-    const ids = recommendations.map((item) => item?.id).filter(Boolean);
-    const recommendedSchemes = await Scheme.find({
-      _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) }
-    }).lean();
+      return { scheme, score };
+    });
 
-    const schemeMap = recommendedSchemes.reduce((acc, scheme) => {
-      acc[scheme._id.toString()] = scheme;
-      return acc;
-    }, {});
+    // 🔥 STEP 2: ALWAYS TAKE TOP (NO EMPTY)
+    const topSchemes = scored
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(item => item.scheme);
 
-    const responsePayload = recommendations
-      .map((item) => {
-        const scheme = schemeMap[item.id];
-        if (!scheme) return null;
-        return {
-          id: item.id,
-          name: scheme.scheme_name || item.name || "Unknown Scheme",
-          reason: item.reason || "Recommended based on your profile.",
-          category: scheme.schemeCategory,
-          eligibility: scheme.eligibility,
-          benefits: scheme.benefits,
-          details: scheme.details,
-          application: scheme.application,
-          documents: scheme.documents,
-          tags: scheme.tags,
-          state: scheme.state
-        };
-      })
-      .filter(Boolean);
+    // 🔥 STEP 3: FORMAT OUTPUT
+    const result = topSchemes.map((s) => ({
+      id: s._id,
+      name: s.scheme_name,
+      category: s.schemeCategory,
+      eligibility: s.eligibility,
+      benefits: s.benefits,
+      details: s.details,
+      application: s.application,
+      documents: s.documents,
+      tags: s.tags,
+      state: s.state,
+      reason: "Matched based on your profile"
+    }));
 
-    if (responsePayload.length === 0) {
-      const fallback = await fallbackRecommendations(userProfile, allSchemes);
-      return res.json(fallback);
-    }
+    res.json(result);
 
-    res.json(responsePayload);
-  } catch (error) {
-    console.error("❌ AI Recommendation Error:", error);
-    const fallback = await fallbackRecommendations(req.body.userProfile || {}, await Scheme.find().lean());
-    if (fallback && fallback.length > 0) {
-      return res.json(fallback);
-    }
-    res.status(500).json({ error: "Failed to fetch recommendations" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed" });
   }
 });
 
