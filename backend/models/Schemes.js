@@ -31,6 +31,10 @@ const schemeSchema = new mongoose.Schema({
   },
   tags: {
     type: String
+  },
+  embedding: {
+    type: [Number],
+    default: []
   }
 }, { timestamps: true });
 
