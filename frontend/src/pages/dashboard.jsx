@@ -4,6 +4,7 @@ import Profile from "./profile";
 import Schemes from "./schemes";
 import Recommendations from "./recommendations";
 import MySchemes from "./MySchemes";
+import Chatbot from "./Chatbot";
 import "./dashboard.css";
 
 const NAV_ITEMS = [
@@ -121,6 +122,9 @@ function Dashboard() {
           {renderContent()}
         </main>
       </div>
+
+      {/* Floating Chatbot */}
+      <Chatbot />
     </div>
   );
 }

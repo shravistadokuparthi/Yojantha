@@ -61,6 +61,7 @@ const buildQueryText = (userProfile) => {
   if (userProfile.age) parts.push(`Age: ${userProfile.age} years old`);
   if (userProfile.income) parts.push(`Income: ${userProfile.income}`);
   if (userProfile.incomeGroup) parts.push(`Income group: ${userProfile.incomeGroup}`);
+  if (userProfile.occupation) parts.push(`Occupation: ${userProfile.occupation}`);
 
   if (userProfile.interests) {
     const interests = Array.isArray(userProfile.interests)
@@ -73,31 +74,93 @@ const buildQueryText = (userProfile) => {
 };
 
 /**
- * RETRIEVAL STEP: Use semantic similarity to find the most relevant schemes.
- * This replaces the old keyword-matching scoreScheme() function.
+ * Extract meaningful keywords from text for boosting.
+ */
+const extractKeywords = (text) => {
+  if (!text) return [];
+  // Remove common stop words and extract meaningful tokens
+  const stopWords = new Set([
+    "i", "am", "a", "an", "the", "is", "are", "was", "were", "be", "been",
+    "being", "have", "has", "had", "do", "does", "did", "will", "would",
+    "could", "should", "may", "might", "shall", "can", "need", "must",
+    "for", "from", "to", "in", "on", "at", "by", "of", "with", "and",
+    "or", "but", "not", "no", "my", "me", "we", "our", "you", "your",
+    "they", "their", "its", "his", "her", "this", "that", "these", "those",
+    "what", "which", "who", "whom", "how", "when", "where", "why",
+    "all", "any", "some", "than", "too", "very", "just", "about",
+    "looking", "want", "get", "find", "help", "please", "like",
+  ]);
+
+  return Array.from(
+    new Set(
+      text
+        .toLowerCase()
+        .match(/\b[\wÀ-ÿ]{3,}\b/g)
+        ?.filter((w) => !stopWords.has(w)) || []
+    )
+  );
+};
+
+/**
+ * Compute keyword overlap score between user query and scheme text.
+ * Returns a value between 0 and 1.
+ */
+const keywordOverlapScore = (keywords, scheme) => {
+  if (!keywords.length) return 0;
+  const schemeText = `${scheme.scheme_name || ""} ${scheme.schemeCategory || ""} ${scheme.eligibility || ""} ${scheme.details || ""} ${scheme.benefits || ""} ${scheme.tags || ""} ${scheme.state || ""} ${scheme.application || ""}`.toLowerCase();
+
+  let matched = 0;
+  keywords.forEach((kw) => {
+    if (schemeText.includes(kw)) matched++;
+  });
+
+  return matched / keywords.length;
+};
+
+/**
+ * HYBRID RETRIEVAL: Combines semantic similarity with keyword boosting.
+ * - Semantic similarity provides the base relevance score
+ * - Keyword overlap boosts schemes that contain exact matches
+ * - A minimum threshold filters out irrelevant schemes
  */
 const semanticRetrieval = async (userProfile, allSchemes) => {
   const queryText = buildQueryText(userProfile);
 
   if (!queryText || queryText.trim().length === 0) {
-    // No query info at all — return first 10 schemes as generic fallback
     return allSchemes.slice(0, 10);
   }
 
   // Generate embedding for the user's query
   const queryEmbedding = await getQueryEmbedding(queryText);
 
-  // Score every scheme that has an embedding using cosine similarity
+  // Extract keywords for boosting
+  const textInput = userProfile.textInput || "";
+  const fullQueryText = `${textInput} ${userProfile.schemeType || ""} ${userProfile.category || ""} ${userProfile.occupation || ""}`;
+  const keywords = extractKeywords(fullQueryText);
+
+  console.log(`🔑 Extracted keywords: [${keywords.join(", ")}]`);
+
+  // Hybrid scoring: 70% semantic + 30% keyword overlap
+  const SEMANTIC_WEIGHT = 0.7;
+  const KEYWORD_WEIGHT = 0.3;
+  const MIN_THRESHOLD = 0.35; // Minimum combined score to be considered
+
   const scored = allSchemes
     .filter((scheme) => scheme.embedding && scheme.embedding.length > 0)
-    .map((scheme) => ({
-      scheme,
-      similarity: cosineSimilarity(queryEmbedding, scheme.embedding),
-    }))
+    .map((scheme) => {
+      const semScore = cosineSimilarity(queryEmbedding, scheme.embedding);
+      const kwScore = keywordOverlapScore(keywords, scheme);
+      const hybridScore = SEMANTIC_WEIGHT * semScore + KEYWORD_WEIGHT * kwScore;
+
+      return { scheme, similarity: hybridScore, semScore, kwScore };
+    })
+    .filter((item) => item.similarity >= MIN_THRESHOLD)
     .sort((a, b) => b.similarity - a.similarity);
 
-  // Take top 30 semantically similar schemes
-  return scored.slice(0, 30).map((item) => item.scheme);
+  console.log(`📊 Retrieval: ${scored.length} schemes above threshold (top: ${scored[0]?.similarity.toFixed(3) || "N/A"})`);
+
+  // Take top 20 for better precision (less noise for Gemini)
+  return scored.slice(0, 20).map((item) => item.scheme);
 };
 
 /**
@@ -117,33 +180,60 @@ const buildRAGPrompt = (userProfile, schemes) => {
     state: scheme.state || "",
   }));
 
-  return `You are an expert Indian government scheme recommender. You have been given a user's profile and a list of candidate schemes that were pre-selected using semantic similarity search. Your job is to pick the TOP 5-10 BEST matching schemes and explain why each one is relevant.
+  // Detect if user provided structured form data or just text
+  const hasStructuredData = userProfile.name || userProfile.age || userProfile.income || userProfile.category;
+  const hasTextInput = userProfile.textInput && userProfile.textInput.trim().length > 0;
 
-USER PROFILE:
-- Name: ${userProfile.name || "N/A"}
-- Age: ${userProfile.age || "N/A"}
-- Gender: ${userProfile.gender || "N/A"}
-- Income: ${userProfile.income || "N/A"}
-- Income Group: ${userProfile.incomeGroup || "N/A"}
-- Category/Caste: ${userProfile.category || "N/A"}
-- State: ${userProfile.state || "N/A"}
-- Interested Scheme Type: ${userProfile.schemeType || "N/A"}
-- Preference Level: ${userProfile.level || "Any"}
-- Interests: ${Array.isArray(userProfile.interests) ? userProfile.interests.join(", ") : userProfile.interests || "N/A"}
-- User's Description: ${userProfile.textInput || "N/A"}
+  // Build profile section — only include fields that have values
+  const profileParts = [];
+  if (userProfile.name) profileParts.push(`- Name: ${userProfile.name}`);
+  if (userProfile.age) profileParts.push(`- Age: ${userProfile.age}`);
+  if (userProfile.gender) profileParts.push(`- Gender: ${userProfile.gender}`);
+  if (userProfile.income) profileParts.push(`- Income: ${userProfile.income}`);
+  if (userProfile.incomeGroup) profileParts.push(`- Income Group: ${userProfile.incomeGroup}`);
+  if (userProfile.category) profileParts.push(`- Category/Caste: ${userProfile.category}`);
+  if (userProfile.state) profileParts.push(`- State: ${userProfile.state}`);
+  if (userProfile.occupation) profileParts.push(`- Occupation: ${userProfile.occupation}`);
+  if (userProfile.schemeType) profileParts.push(`- Interested Scheme Type: ${userProfile.schemeType}`);
+  if (userProfile.level) profileParts.push(`- Preference Level: ${userProfile.level}`);
+  if (userProfile.interests) {
+    const interests = Array.isArray(userProfile.interests) ? userProfile.interests.join(", ") : userProfile.interests;
+    if (interests) profileParts.push(`- Interests: ${interests}`);
+  }
+  if (hasTextInput) profileParts.push(`- User's Description: ${userProfile.textInput}`);
 
-CANDIDATE SCHEMES (pre-filtered by semantic relevance):
-${JSON.stringify(simplifiedSchemes, null, 2)}
+  const profileSection = profileParts.length > 0 ? profileParts.join("\n") : "- No specific profile provided";
 
-STRICT RULES:
-1. The user's text description is the PRIMARY matching signal. If they say "education", only return education-related schemes.
+  // Adapt rules based on input type
+  const rules = hasStructuredData
+    ? `STRICT RULES:
+1. The user's text description (if provided) is the PRIMARY matching signal. If they say "education", only return education-related schemes.
 2. Carefully read each scheme's name, eligibility, details, benefits, and tags to verify it truly matches the user's intent.
 3. Do NOT recommend a scheme unless you can clearly justify why it is relevant to the user.
 4. If the user mentions a caste/reservation category (SC, ST, OBC, BC, minority, PWD, etc.), only include schemes whose eligibility explicitly supports that group.
 5. If the user mentions a specific state, prioritize schemes from that state.
 6. Return between 5 and 10 schemes maximum, ranked by relevance.
 7. Do NOT invent schemes. Only use schemes from the candidate list above.
-8. Respond ONLY with valid JSON, no markdown, no extra text.
+8. Respond ONLY with valid JSON, no markdown, no extra text.`
+    : `STRICT RULES:
+1. The user has provided a free-text description. This is your ONLY matching signal. Focus entirely on what they described.
+2. Carefully analyze the user's description to understand their needs, situation, and what kind of help they are looking for.
+3. Match schemes based on the MEANING and INTENT of the description — look for schemes whose benefits, eligibility, or purpose align with what the user needs.
+4. If the description mentions a specific group (students, farmers, women, SC/ST, etc.), prioritize schemes targeting that group.
+5. If the description mentions a state or region, prioritize schemes from that area.
+6. Return between 5 and 10 schemes maximum, ranked by relevance.
+7. Do NOT invent schemes. Only use schemes from the candidate list above.
+8. Respond ONLY with valid JSON, no markdown, no extra text.`;
+
+  return `You are an expert Indian government scheme recommender. You have been given a user's profile and a list of candidate schemes that were pre-selected using semantic similarity search. Your job is to pick the TOP 5-10 BEST matching schemes and explain why each one is relevant.
+
+USER PROFILE:
+${profileSection}
+
+CANDIDATE SCHEMES (pre-filtered by semantic relevance):
+${JSON.stringify(simplifiedSchemes, null, 2)}
+
+${rules}
 
 OUTPUT FORMAT:
 [

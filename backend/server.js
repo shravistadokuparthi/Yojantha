@@ -12,6 +12,7 @@ const applyRoutes = require("./routes/applyRoutes");
 
 const schemesRoutes = require(path.join(__dirname, "routes", "schemesRoutes"));
 const aiRoutes = require("./routes/airoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const app = express();
 
 app.use(cors());
@@ -28,6 +29,7 @@ app.use("/api/user", profileRoutes);
 app.use("/api/schemes", schemesRoutes);
 app.use("/api/apply", applyRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/chatbot", chatRoutes);
 
 // Start server
 app.listen(5000, () => {
