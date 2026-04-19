@@ -12,7 +12,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // ═══════════════════════════════════════════════════════════════
 
 const getQueryEmbedding = async (text) => {
-  const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+  const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
   const truncated = text.substring(0, 8000);
   const result = await model.embedContent(truncated);
   return result.embedding.values;
@@ -104,11 +104,12 @@ const keywordFallback = (message, allSchemes) => {
  * Combines recent messages to understand context.
  */
 const buildSearchQuery = (message, history) => {
-  // Use the last 4 messages for context + current message
+  // Extract key entities from history (like state, category, occupation) and append current message
   const recentContext = (history || [])
-    .slice(-4)
+    .slice(-6)
     .map((m) => m.content)
     .join(" ");
+  // Combine it in a single semantic string
   return `${recentContext} ${message}`.trim();
 };
 
@@ -184,7 +185,9 @@ HOW TO BEHAVE — FOLLOW THESE RULES:
 
 7. **GUIDE THE USER**: After answering, suggest next steps: "Would you like to know how to apply?" or "Should I check if there are more schemes in your state?"
 
-8. **SCHEME REFERENCES**: Only reference schemes from the database above. If the user asks about something not in the data, say "I don't have details about that specific scheme in my database, but here's what I can help with..."
+8. **SCHEME REFERENCES & GENERAL CHAT**: Use the database for scheme details. However, if the user asks a normal conversational question (e.g., "How are you?", "Who made you?"), or talks about general topics, **answer them naturally and warmly like a friendly human**. Do not rigidly say "I don't have details about that scheme in my database" if they are just chatting with you! Be conversational and fluid.
+
+9. **OUT OF SCOPE SCHEMES**: If they specifically ask for a government scheme *not* in your database, then you can say politely, "I don't have details about that specific scheme right now, but here's what I can help with..."
 
 RESPONSE FORMAT — JSON only:
 {
@@ -220,13 +223,19 @@ router.post("/chat", async (req, res) => {
     // Build a richer search query from conversation context
     const searchQuery = buildSearchQuery(message, history);
 
-    // Use keyword-only retrieval (NO embedding API call — saves quota)
+    // Use hybrid retrieval (semantic text-embedding + keyword overlap)
     let candidateSchemes = [];
     try {
-      console.log("🔍 Chatbot using keyword search (no embedding cost)...");
-      candidateSchemes = keywordFallback(searchQuery, allSchemes);
+      console.log("🔍 Chatbot trying semantic hybrid retrieval...");
+      candidateSchemes = await hybridRetrieval(searchQuery, allSchemes);
+      
+      // If semantic retrieval yielded nothing, fallback to keyword
+      if (candidateSchemes.length === 0) {
+        candidateSchemes = keywordFallback(searchQuery, allSchemes);
+      }
     } catch (retrievalError) {
-      console.log("Retrieval error:", retrievalError.message);
+      console.log("⚠️ Embedding failed (rate limit/quota), using keyword fallback:", retrievalError.message);
+      candidateSchemes = keywordFallback(searchQuery, allSchemes);
     }
 
     // Even with no candidates, still let Gemini respond conversationally
@@ -236,22 +245,27 @@ router.post("/chat", async (req, res) => {
       const prompt = buildAgentPrompt(message, history, candidateSchemes);
 
       // Helper: call Gemini with model fallback + retry
-      const MODELS = ["gemini-1.5-flash-latest", "gemini-2.0-flash-lite", "gemini-2.0-flash"];
+      const MODELS = ["gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-pro-latest"];
       let lastError = null;
 
       const callGemini = async () => {
         for (const modelName of MODELS) {
           try {
             console.log(`🤖 Trying model: ${modelName}`);
-            const model = genAI.getGenerativeModel({ model: modelName });
+            const model = genAI.getGenerativeModel({ 
+              model: modelName,
+              generationConfig: {
+                responseMimeType: "application/json"
+              }
+            });
             const result = await model.generateContent(prompt);
             console.log(`✅ Success with: ${modelName}`);
             return result.response.text();
           } catch (err) {
             lastError = err;
             console.log(`⚠️ ${modelName} failed (${err.status || "unknown"}): ${(err.message || "").substring(0, 100)}`);
-            if (err.status === 429) {
-              continue; // Try next model
+            if (err.status === 429 || err.status === 503) {
+              continue; // Try next model on rate limits or service unavailable
             }
             throw err; // Non-rate-limit error, stop
           }
