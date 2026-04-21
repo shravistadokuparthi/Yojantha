@@ -42,6 +42,64 @@ function Chatbot() {
     }));
   };
 
+  const handleInterested = async (schemeId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first to save schemes");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/add-interested", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ schemeId }),
+      });
+
+      if (res.ok) {
+        alert("Added to interested schemes!");
+        window.dispatchEvent(new Event('profileUpdated'));
+      } else {
+        alert("Failed to add to interested schemes");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred while saving");
+    }
+  };
+
+  const handleApply = async (schemeId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first to apply");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/user/add-applied", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ schemeId }),
+      });
+
+      if (res.ok) {
+        alert("Applied successfully!");
+        window.dispatchEvent(new Event('profileUpdated'));
+      } else {
+        alert("Failed to record application");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred while applying");
+    }
+  };
+
   const sendMessage = async (text) => {
     const userMsg = text.trim();
     if (!userMsg || loading) return;
@@ -221,6 +279,22 @@ function Chatbot() {
                               📍 {scheme.state}
                             </span>
                           )}
+                        </div>
+                        <div className="chat-scheme-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                          <button
+                            className="chat-action-btn"
+                            onClick={() => handleInterested(scheme.id)}
+                            style={{ flex: 1, padding: '6px 0', fontSize: '11.5px', background: 'rgba(108, 59, 255, 0.1)', border: '1px solid rgba(108, 59, 255, 0.2)', borderRadius: '6px', color: '#c4b5fd', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: "'Syne', sans-serif", fontWeight: '600' }}
+                          >
+                            ⭐ Interested
+                          </button>
+                          <button
+                            className="chat-action-btn apply-btn"
+                            onClick={() => handleApply(scheme.id)}
+                            style={{ flex: 1, padding: '6px 0', fontSize: '11.5px', background: 'linear-gradient(135deg, #6c3bff, #a855f7)', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: "'Syne', sans-serif", fontWeight: '600' }}
+                          >
+                            Apply Now →
+                          </button>
                         </div>
                       </div>
                     ))}
