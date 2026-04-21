@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
+import ThematicBackground from "../components/ThematicBackground";
 
 /* ── PASSWORD REGEX ── */
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
@@ -171,107 +172,108 @@ function Login() {
   };
 
   return (
+    <ThematicBackground opacity={0.4} animate={true} mode="light">
+      <div className="yj-root">
+        {/* Animated Background Blobs */}
+        <div className="yj-blob yj-blob-1" />
+        <div className="yj-blob yj-blob-2" />
+        <div className="yj-blob yj-blob-3" />
 
-    <div className="yj-root">
+        {/* ── LEFT PANEL ── */}
+        <div className="yj-left">
+          <div className="yj-brand">
+            <div className="yj-brand-icon">🏛️</div>
+            <div className="yj-brand-text">
+              <span className="yj-brand-name">योजनांता</span>
+              <span className="yj-brand-sub" style={{ display: 'block', marginTop: '4px', color: '#64748b', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                सत्यमेव जयते ● Government of India
+              </span>
+            </div>
+          </div>
 
-      {/* background blobs */}
-      <div className="yj-blob yj-blob-1" />
-      <div className="yj-blob yj-blob-2" />
-      <div className="yj-blob yj-blob-3" />
+          <div className="yj-tagline">
+            Your schemes.<br />
+            <span>Your rights.</span><br />
+            Simplified.
+          </div>
 
-      {/* ── LEFT PANEL ── */}
-      <div className="yj-left">
+          <p className="yj-sub">
+            AI-powered access to 3,400+ government welfare schemes —
+            matched to your profile in seconds.
+          </p>
 
-        <div className="yj-brand">
-          <div className="yj-brand-icon">🪷</div>
-          <span className="yj-brand-name">Yojantha</span>
+          <div className="yj-stats">
+            <div className="yj-stat-capsule">
+              <div className="yj-stat-num">3,400+</div>
+              <div className="yj-stat-label">Schemes</div>
+            </div>
+            <div className="yj-stat-capsule">
+              <div className="yj-stat-num">19</div>
+              <div className="yj-stat-label">Categories</div>
+            </div>
+            <div className="yj-stat-capsule">
+              <div className="yj-stat-num">100%</div>
+              <div className="yj-stat-label">Free</div>
+            </div>
+          </div>
+
         </div>
 
-        <div className="yj-tagline">
-          Your schemes.<br />
-          <span>Your rights.</span><br />
-          Simplified.
-        </div>
-
-        <p className="yj-sub">
-          AI-powered access to 3,400+ government welfare schemes —
-          matched to your profile in seconds.
-        </p>
-
-        <div className="yj-stats">
-          <div>
-            <div className="yj-stat-num">3,400+</div>
-            <div className="yj-stat-label">Schemes</div>
-          </div>
-          <div>
-            <div className="yj-stat-num">19</div>
-            <div className="yj-stat-label">Categories</div>
-          </div>
-          <div>
-            <div className="yj-stat-num">100%</div>
-            <div className="yj-stat-label">Free</div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ── RIGHT PANEL ── */}
-      <div className="yj-right">
-        <div className="yj-card">
-
-          {!showForgot ? (
-
-            /* ── LOGIN FORM ── */
-            <>
+        {/* ── RIGHT PANEL ── */}
+        <div className="yj-right">
+          <div className="yj-card">
+            <div className="yj-card-header">
               <div className="yj-card-title">Welcome back</div>
-              <div className="yj-card-sub">Sign in to your Yojantha account</div>
+              <div className="yj-card-sub">Sign in to your Yojanta account</div>
+            </div>
+            {!showForgot ? (
+              <>
+                <div className="yj-field">
+                  <label className="yj-label">Email</label>
+                  <input
+                    className="yj-input"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  />
+                </div>
 
-              <div className="yj-field">
-                <label className="yj-label">Email</label>
-                <input
-                  className="yj-input"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                />
-              </div>
+                <div className="yj-field">
+                  <label className="yj-label">Password</label>
+                  <input
+                    className="yj-input"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  />
+                </div>
 
-              <div className="yj-field">
-                <label className="yj-label">Password</label>
-                <input
-                  className="yj-input"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                />
-              </div>
+                <div className="yj-row">
+                  <span className="yj-link" onClick={() => setShowForgot(true)}>
+                    Forgot password?
+                  </span>
+                </div>
 
-              <div className="yj-row">
-                <span className="yj-link" onClick={() => setShowForgot(true)}>
-                  Forgot password?
-                </span>
-              </div>
+                {error && <div className="yj-error">⚠ {error}</div>}
 
-              {error && <div className="yj-error">⚠ {error}</div>}
-
-              <button className="yj-btn" onClick={handleLogin} disabled={loading}>
-                {loading ? "Signing in…" : "Sign in →"}
-              </button>
-
-              <div className="yj-divider">or</div>
-
-              <Link to="/register" style={{ textDecoration: "none" }}>
-                <button className="yj-btn-ghost">
-                  Create a new account
+                <button className="yj-btn" onClick={handleLogin} disabled={loading}>
+                  {loading ? "Signing in…" : "Sign in →"}
                 </button>
-              </Link>
-            </>
 
-          ) : (
+                <div className="yj-divider">or</div>
+
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  <button className="yj-btn-ghost">
+                    Create a new account
+                  </button>
+                </Link>
+              </>
+
+            ) : (
 
             /* ── FORGOT / RESET FORM ── */
             <>
@@ -346,13 +348,11 @@ function Login() {
 
           )}
 
+          </div>
         </div>
       </div>
-
-    </div>
-
+    </ThematicBackground>
   );
-
 }
 
 export default Login;

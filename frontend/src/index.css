@@ -1,11 +1,31 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  
+  /* Govt Portal Light Palette */
+  --color-bg-body: #f4f6f8;
+  --color-bg-card: #ffffff;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+  
+  /* Heritage & Power Palette */
+  --regal-navy: #0a1c3d;
+  --majestic-saffron: #ff9933;
+  --royal-gold: #d4af37;
+  
+  /* Brand/Official Accents */
+  --color-primary-blue: var(--regal-navy);
+  --color-primary-hover: #162a53;
+  --color-accent-saffron: var(--majestic-saffron);
+  --color-accent-green: #065f46;
+
+  color-scheme: light;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-body);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,24 +33,56 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+  /* Heritage patterns removed in favor of clean cinematic background */
+
+
+/* ── Global Animated Blobs (The 'Nice Thing') ── */
+.yj-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.3;
+  animation: yj-drift 15s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+.yj-blob-1 { width: 600px; height: 600px; background: rgba(10, 28, 61, 0.35); top: -150px; left: -120px; animation-delay: 0s; }
+.yj-blob-2 { width: 450px; height: 450px; background: rgba(255, 153, 51, 0.25); bottom: -100px; right: -100px; animation-delay: -4s; }
+.yj-blob-3 { width: 350px; height: 350px; background: rgba(6, 95, 70, 0.15); top: 35%; left: 60%; animation-delay: -7s; }
+
+@keyframes yj-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(60px, 40px) scale(1.15); }
+}
+
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-weight: 600;
+  color: var(--color-primary-blue);
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--color-accent-saffron);
 }
 
 body {
   margin: 0;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: transparent; /* Changed to transparent for visibility */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.2;
 }
 
 button {
@@ -38,29 +90,65 @@ button {
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-weight: 600;
+  font-family: 'Outfit', inherit;
+  background-color: var(--color-primary-blue);
+  color: #ffffff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* ── Global Premium Utilities ── */
+.card-premium {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-premium:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.btn-premium {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--color-primary-blue), #2563eb);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+}
+
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid var(--color-border);
 }

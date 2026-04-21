@@ -65,22 +65,35 @@ function Home({ navigateTo }) {
     <div className="home-root">
 
       {/* ── Hero ── */}
-      <div className="home-hero">
+      <div className="home-hero heritage-jaali">
         <div className="home-hero-text">
-          <p className="home-eyebrow">🏛️ Government of India</p>
+          <div className="home-official-badge">
+            <span className="home-badge-icon">🏛️</span>
+            <span className="home-badge-text">Government of India ● Citizen Support Portal</span>
+          </div>
           <h1 className="home-headline">
-            Welcome to<br />
-            <span className="home-grad">Yojanta Portal</span>
+            Find Help.<br />
+            <span className="home-grad">Made Simple for You.</span>
           </h1>
           <p className="home-sub">
-            Discover schemes tailored to your profile. Check eligibility,
-            apply easily, and track your applications — all in one place.
+            The Government of India provides thousands of benefits for citizens like you. 
+            We make it easy to find precisely which ones can help you and your family 
+            today — with no complicated paperwork.
           </p>
+          <div className="home-hero-footer">
+            <button className="home-btn-primary" onClick={() => navigateTo("schemes")}>
+              Find My Benefits →
+            </button>
+          </div>
         </div>
         <div className="home-hero-stat">
-          <div className="home-visitor-pill">
-            <span className="home-vis-dot" />
-            <span>{visitors.toLocaleString()} visitors today</span>
+          <div className="home-visitor-card majestic-card">
+            <div className="home-visitor-header">
+              <span className="home-vis-dot" />
+              National Support
+            </div>
+            <div className="home-vis-count">{visitors.toLocaleString()}</div>
+            <div className="home-vis-label">People Helping Each Other Today</div>
           </div>
         </div>
       </div>
@@ -88,34 +101,47 @@ function Home({ navigateTo }) {
       {/* ── Stat Cards ── */}
       <div className="home-stats-grid">
         <div
-          className="home-stat-card home-stat-purple"
+          className="home-stat-card home-stat-blue"
           onClick={() => navigateTo("myschemes", { type: "interested" })}
         >
-          <div className="home-stat-icon">⭐</div>
-          <div className="home-stat-num">{stats.eligible}</div>
-          <div className="home-stat-label">Interested Schemes</div>
-          <div className="home-stat-action">View all →</div>
+          <div className="home-stat-top">
+            <div className="home-stat-icon">⭐</div>
+            <div className="home-stat-pill">Saved</div>
+          </div>
+          <div className="home-stat-main">
+            <div className="home-stat-num">{stats.eligible}</div>
+            <div className="home-stat-label">Benefits I Liked</div>
+          </div>
+          <div className="home-stat-footer">See your saved list →</div>
         </div>
 
         <div
-          className="home-stat-card home-stat-green"
+          className="home-stat-card home-stat-saffron"
           onClick={() => navigateTo("myschemes", { type: "applied" })}
         >
-          <div className="home-stat-icon">✅</div>
-          <div className="home-stat-num">{stats.applied}</div>
-          <div className="home-stat-label">Applied Schemes</div>
-          <div className="home-stat-action">View all →</div>
+          <div className="home-stat-top">
+            <div className="home-stat-icon">✅</div>
+            <div className="home-stat-pill">Ready</div>
+          </div>
+          <div className="home-stat-main">
+            <div className="home-stat-num">{stats.applied}</div>
+            <div className="home-stat-label">Benefits I Applied For</div>
+          </div>
+          <div className="home-stat-footer">Check your progress →</div>
         </div>
       </div>
 
       {/* ── How It Works ── */}
-      <div className="home-section-title">How It Works</div>
+      <div className="home-section-header">
+        <div className="home-section-title">How Yojanta Helps You</div>
+        <p className="home-section-sub">A simple way to get the support you deserve</p>
+      </div>
       <div className="home-steps">
         {[
-          { num: "01", title: "Enter Details",      desc: "Fill in your personal & financial info." },
-          { num: "02", title: "Get Recommendations", desc: "We match you with eligible schemes." },
-          { num: "03", title: "Apply",              desc: "Submit your application in one click." },
-          { num: "04", title: "Track Status",       desc: "Monitor progress on your dashboard." },
+          { num: "01", title: "Tell Us About Yourself",      desc: "Answer a few simple questions about your life." },
+          { num: "02", title: "We Find Your Matches", desc: "We check which government schemes fit you best." },
+          { num: "03", title: "Easy Application",       desc: "Follow our simple steps to apply for your support." },
+          { num: "04", title: "Get Your Benefits",      desc: "Track everything right here within the portal." },
         ].map((s) => (
           <div className="home-step" key={s.num}>
             <div className="home-step-num">{s.num}</div>
@@ -126,12 +152,19 @@ function Home({ navigateTo }) {
       </div>
 
       {/* ── Latest Updates ── */}
-      <div className="home-section-title">Latest Updates</div>
+      <div className="home-section-header">
+        <div className="home-section-title">National Updates</div>
+        <p className="home-section-sub">Stay informed about new government initiatives</p>
+      </div>
       <div className="home-updates">
         {updates.map((u, i) => (
           <div className="home-update-item" key={i}>
             <span className="home-update-dot" />
-            <span>{u}</span>
+            <div className="home-update-content">
+              <span className="home-update-text">{u}</span>
+              <span className="home-update-time">Just now</span>
+            </div>
+            <span className="home-update-arrow">→</span>
           </div>
         ))}
       </div>

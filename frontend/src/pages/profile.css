@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
-/* ── layout wrapper — fits inside the dashboard content area ── */
 .yj-profile-content {
   width: 100%;
-  max-width: 760px;
+  max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
+  font-family: 'Inter', sans-serif;
 }
 
 /* ── profile header row ── */
@@ -20,54 +18,59 @@
 }
 
 .yj-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 32px;
   font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.5px;
   margin-bottom: 8px;
+  background: linear-gradient(90deg, #1d4ed8, #f97316); /* Blue to Saffron */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .yj-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #34d399;
-  background: rgba(52,211,153,0.10);
-  border: 1px solid rgba(52,211,153,0.20);
-  padding: 4px 14px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #047857; /* Emerald Dark */
+  background: #ecfdf5; /* Emerald Light */
+  border: 1px solid #10b981;
+  padding: 6px 16px;
   border-radius: 99px;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* ── danger button (logout) ── */
 .yj-btn-danger {
-  padding: 10px 22px;
-  background: rgba(255,59,122,0.10);
-  border: 1px solid rgba(255,59,122,0.25);
+  padding: 12px 24px;
+  background: #fef2f2; /* Red light */
+  border: 1px solid #fca5a5;
   border-radius: 12px;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #ff6b8a;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #dc2626;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  transition: all 0.2s ease;
 }
 
 .yj-btn-danger:hover {
-  background: rgba(255,59,122,0.18);
-  border-color: rgba(255,59,122,0.45);
-  transform: translateY(-1px);
+  background: #fee2e2;
+  border-color: #ef4444;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
 }
 
 /* ── card ── */
 .yj-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.09);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 20px;
-  padding: 28px 30px;
-  backdrop-filter: blur(20px);
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Light drop shadow */
 }
 
 /* ── card top row ── */
@@ -75,30 +78,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
-  gap: 12px;
+  margin-bottom: 24px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .yj-card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.3px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.2px;
 }
 
 .yj-card-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.38);
-  margin-bottom: 20px;
+  font-size: 15px;
+  color: #475569;
+  margin-bottom: 24px;
 }
 
 /* ── 2-col grid for fields ── */
 .yj-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 24px;
 }
 
 /* ── field ── */
@@ -107,110 +110,121 @@
 /* ── label ── */
 .yj-label {
   display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.45);
-  letter-spacing: 0.8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  margin-bottom: 7px;
-  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 8px;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* ── input ── */
 .yj-input {
   width: 100%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: #f8fafc; /* Lighter background */
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 13px 16px;
+  padding: 14px 18px;
   font-size: 15px;
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  color: #0f172a;
+  font-family: 'Inter', sans-serif;
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
-.yj-input::placeholder { color: rgba(255,255,255,0.20); }
+.yj-input::placeholder { color: #94a3b8; }
 
 .yj-input:focus {
-  border-color: #6c3bff;
-  background: rgba(108,59,255,0.08);
+  border-color: #1d4ed8;
+  background: #eff6ff; /* Lighter blue focus */
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
 }
 
 .yj-input:disabled {
-  opacity: 0.55;
-  cursor: default;
-  background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.06);
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
 }
 
 /* ── primary button ── */
 .yj-btn {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #6c3bff, #a855f7);
-  border: none;
+  padding: 16px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb); /* National Blue */
+  border: 1px solid rgba(29, 78, 216, 0.4);
   border-radius: 12px;
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
   cursor: pointer;
   letter-spacing: 0.3px;
-  transition: opacity 0.2s, transform 0.15s;
-  margin-top: 4px;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.2);
 }
 
-.yj-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+.yj-btn:hover  { 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.3);
+  background: linear-gradient(135deg, #1e40af, #1d4ed8);
+}
 .yj-btn:active { transform: translateY(0); }
-.yj-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.yj-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(100%); }
 
 /* ── ghost button ── */
 .yj-btn-ghost {
-  padding: 13px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
+  padding: 14px 20px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
-  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+  color: #475569;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .yj-btn-ghost:hover {
-  border-color: rgba(255,255,255,0.30);
-  color: rgba(255,255,255,0.85);
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
 }
 
-.yj-btn-small { padding: 8px 18px; font-size: 12px; }
+.yj-btn-small { padding: 10px 20px; font-size: 13px; font-weight: 700; font-family: 'Outfit', sans-serif; }
 
 /* ── password strength ── */
 .yj-strength-wrap {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
-  gap: 5px;
+  gap: 8px;
   align-items: center;
 }
 
 .yj-strength-bar {
-  height: 3px;
+  height: 4px;
   flex: 1;
   border-radius: 99px;
-  background: rgba(255,255,255,0.08);
-  transition: background 0.3s;
+  background: #e2e8f0;
+  transition: background 0.3s ease;
 }
 
 .yj-strength-label {
   font-size: 11px;
-  font-weight: 500;
-  min-width: 46px;
+  font-weight: 700;
+  min-width: 50px;
   text-align: right;
+  color: #64748b;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* ── responsive ── */
-@media (max-width: 600px) {
-  .yj-grid { grid-template-columns: 1fr; }
-  .yj-card { padding: 20px 18px; }
+@media (max-width: 640px) {
+  .yj-grid { grid-template-columns: 1fr; gap: 16px; }
+  .yj-card { padding: 24px 20px; }
+  .yj-title { font-size: 26px; }
 }

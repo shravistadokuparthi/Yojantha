@@ -4,88 +4,124 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f4f6fb; 
-  padding: 20px;
-  animation: fadeIn 0.7s ease;
+  background-color: transparent; 
+  padding: 24px;
+  animation: fadeIn 0.4s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Match profile card style, but adjust width for a form */
-.card {
-  background: white;
-  padding: 35px 30px;
+.box {
+  background: #ffffff; /* White card */
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 40px;
   width: 100%;
-  max-width: 450px; 
-  border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-  transition: 0.3s ease;
+  max-width: 480px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); /* Light drop shadow */
+  backdrop-filter: none;
+}
+
+.content {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Spacing between inputs */
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
-}
-
-.card h2 {
+h2 {
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 800;
   text-align: center;
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 8px;
 }
 
-/* Match profile input fields */
-.input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  transition: 0.3s;
+h2 + p {
+  text-align: center;
+  color: #64748b;
   font-size: 15px;
+  margin-bottom: 30px;
 }
 
-.input:focus {
-  border: 1px solid #667eea;
-  box-shadow: 0 0 8px rgba(102,126,234,0.4);
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  box-sizing: border-box;
   outline: none;
 }
 
-/* Match profile button style */
-.button {
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.form-group input:focus {
+  border-color: #1d4ed8;
+  background: #eff6ff; /* Lighter blue focus */
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+}
+
+.submit-btn {
   width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  padding: 16px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  border: 1px solid rgba(29, 78, 216, 0.4);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  color: #ffffff;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.button:hover {
-  background: #5a6ed1; /* Slightly darker shade on hover */
-}
-
-/* Style the login link to match the theme */
-.link {
-  text-align: center;
-  display: block;
+  transition: all 0.2s ease;
   margin-top: 10px;
-  color: #667eea;
-  text-decoration: none;
-  font-size: 14px;
-  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.2);
 }
 
-.link:hover {
-  text-decoration: underline;
-  color: #764ba2; /* Pulls from your profile progress-fill gradient */
+.submit-btn:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.3);
+  background: linear-gradient(135deg, #1e40af, #1d4ed8);
+}
+
+.auth-redirect {
+  text-align: center;
+  margin-top: 24px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.auth-redirect a {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 6px;
+  transition: color 0.2s;
+}
+
+.auth-redirect a:hover {
+  color: #f97316; /* Saffron Hover */
 }

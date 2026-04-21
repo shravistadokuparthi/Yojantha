@@ -6,6 +6,7 @@ import Recommendations from "./recommendations";
 import MySchemes from "./MySchemes";
 import Chatbot from "./Chatbot";
 import "./dashboard.css";
+import ThematicBackground from "../components/ThematicBackground";
 
 const NAV_ITEMS = [
   { id: "home",    label: "Home",    icon: "🏠" },
@@ -52,22 +53,27 @@ function Dashboard() {
   const currentPage = PAGE_LABELS[active] || PAGE_LABELS.home;
 
   return (
-    <div className="dash-root">
-      {/* Ambient background */}
-      <div className="dash-blob dash-blob-1" />
-      <div className="dash-blob dash-blob-2" />
-      <div className="dash-blob dash-blob-3" />
+    <ThematicBackground opacity={0.05} animate={false}>
+      <div className="dash-root">
+        {/* Animated Background Blobs (The 'Nice Thing') */}
+        <div className="yj-blob yj-blob-1" style={{ zIndex: 0 }} />
+        <div className="yj-blob yj-blob-2" style={{ zIndex: 0 }} />
+        <div className="yj-blob yj-blob-3" style={{ zIndex: 0 }} />
 
-      {/* ── Sidebar ── */}
-      <aside className={`dash-sidebar ${sidebarOpen ? "open" : ""}`}>
-        {/* Brand */}
-        <div className="dash-brand">
-          <div className="dash-brand-icon">🏛️</div>
-          <div className="dash-brand-text">
-            <span className="dash-brand-name">Yojanta</span>
-            <span className="dash-brand-sub">Portal</span>
+        {/* ── Sidebar ── */}
+        <aside className={`dash-sidebar heritage-jaali ${sidebarOpen ? "open" : ""}`}>
+          {/* Brand */}
+          <div className="dash-brand">
+            <div className="dash-brand-icon">
+              {/* National Emblem (Lion Capital) */}
+              🏛️
+            </div>
+            <div className="dash-brand-text">
+              <span className="dash-brand-name">योजनांता</span>
+              <span className="dash-brand-name" style={{ fontSize: '18px' }}>Yojanta</span>
+              <span className="dash-brand-sub">सत्यमेव जयते ● Government of India</span>
+            </div>
           </div>
-        </div>
 
         {/* Nav */}
         <nav className="dash-nav">
@@ -79,14 +85,14 @@ function Dashboard() {
             >
               <span className="dash-nav-icon">{item.icon}</span>
               <span className="dash-nav-label">{item.label}</span>
-              {active === item.id && <span className="dash-nav-pip" />}
             </button>
           ))}
         </nav>
 
         {/* Footer tag */}
         <div className="dash-sidebar-footer">
-          <span>Gov. Scheme Management</span>
+          <div style={{ fontWeight: 700, color: 'var(--text-main)', marginBottom: '4px' }}>Digital India</div>
+          <span>A Digital Excellence Initiative<br/>by MeitY, Govt. of India</span>
         </div>
       </aside>
 
@@ -111,9 +117,9 @@ function Dashboard() {
             {currentPage.icon}{" "}{currentPage.label}
           </div>
 
-          <div className="dash-topbar-badge">
+          <div className="dash-topbar-badge majestic-badge">
             <span className="dash-dot" />
-            Live
+            Viksit Bharat @ 2047
           </div>
         </header>
 
@@ -126,6 +132,7 @@ function Dashboard() {
       {/* Floating Chatbot */}
       <Chatbot />
     </div>
+    </ThematicBackground>
   );
 }
 

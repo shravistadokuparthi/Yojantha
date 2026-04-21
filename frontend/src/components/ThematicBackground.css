@@ -1,0 +1,62 @@
+.thematic-root {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: transparent;
+}
+
+/* ── Base Container ── */
+.thematic-bg-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Lifted to be visible over body background */
+  overflow: hidden;
+  background: #f4f6f8; /* Light Mode Fallback */
+  transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.thematic-bg-container.dark {
+  background: #0a1c3d; /* Regal Navy - Dark Mode */
+}
+
+/* ── Background Image ── */
+.thematic-main-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  /* Filter to make the map pop more in dark mode */
+}
+
+.dark .thematic-main-bg {
+  filter: contrast(110%) brightness(120%);
+}
+
+.thematic-main-bg.animate {
+  animation: thematic-slow-zoom 40s linear infinite alternate;
+}
+
+/* ── Vignette Overlay ── */
+.thematic-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, #f4f6f8 95%);
+  pointer-events: none;
+  transition: background 0.7s ease;
+}
+
+.thematic-bg-overlay.dark {
+  background: radial-gradient(circle at center, rgba(10, 28, 61, 0.2) 0%, #0a1c3d 98%);
+}
+
+.thematic-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes thematic-slow-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.15); }
+}
