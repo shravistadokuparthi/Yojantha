@@ -5,50 +5,65 @@
   line-height: 1.6;
   font-weight: 400;
   
-  /* Govt Portal Light Palette */
-  --color-bg-body: #f4f6f8;
-  --color-bg-card: #ffffff;
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
-  
-  /* Heritage & Power Palette */
-  --regal-navy: #0a1c3d;
+  /* Shared Palette */
   --majestic-saffron: #ff9933;
-  --royal-gold: #d4af37;
+  --royal-gold:       #d4af37;
+  --emerald-green:    #10b981;
   
-  /* Brand/Official Accents */
-  --color-primary-blue: var(--regal-navy);
-  --color-primary-hover: #162a53;
-  --color-accent-saffron: var(--majestic-saffron);
-  --color-accent-green: #065f46;
+  /* Theme Variables (Light Default) */
+  --color-bg-body:    #f4f6f8;
+  --color-bg-card:    #ffffff;
+  --color-text-main:  #0f172a;
+  --color-text-muted: #64748b;
+  --color-border:     #e2e8f0;
+  --color-bg-sidebar: #ffffff;
+  --color-bg-topbar:  rgba(255, 255, 255, 0.95);
+  
+  --regal-navy:       #0a1c3d;
+  --primary-blue:     #1d4ed8;
+  --primary-hover:    #1e40af;
 
   color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --color-bg-body:    #0f172a;
+  --color-bg-card:    #1e293b;
+  --color-text-main:  #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-border:     #334155;
+  --color-bg-sidebar: #1e293b;
+  --color-bg-topbar:  rgba(15, 23, 42, 0.95);
+  
+  --regal-navy:       #3b82f6;
+  --primary-blue:     #3b82f6;
+  --primary-hover:    #60a5fa;
+
+  color-scheme: dark;
+}
+
+:root {
   color: var(--color-text-main);
   background-color: var(--color-bg-body);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-  /* Heritage patterns removed in favor of clean cinematic background */
-
-
-/* ── Global Animated Blobs (The 'Nice Thing') ── */
+/* ── Global Animated Blobs ── */
 .yj-blob {
   position: fixed;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.3;
+  opacity: 0.2;
   animation: yj-drift 15s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: -1;
 }
-.yj-blob-1 { width: 600px; height: 600px; background: rgba(10, 28, 61, 0.35); top: -150px; left: -120px; animation-delay: 0s; }
-.yj-blob-2 { width: 450px; height: 450px; background: rgba(255, 153, 51, 0.25); bottom: -100px; right: -100px; animation-delay: -4s; }
-.yj-blob-3 { width: 350px; height: 350px; background: rgba(6, 95, 70, 0.15); top: 35%; left: 60%; animation-delay: -7s; }
+.yj-blob-1 { width: 600px; height: 600px; background: var(--primary-blue); top: -150px; left: -120px; animation-delay: 0s; }
+.yj-blob-2 { width: 450px; height: 450px; background: var(--majestic-saffron); bottom: -100px; right: -100px; animation-delay: -4s; }
+.yj-blob-3 { width: 350px; height: 350px; background: var(--emerald-green); top: 35%; left: 60%; animation-delay: -7s; }
 
 @keyframes yj-drift {
   from { transform: translate(0, 0) scale(1); }
@@ -57,12 +72,12 @@
 
 a {
   font-weight: 600;
-  color: var(--color-primary-blue);
+  color: var(--primary-blue);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 a:hover {
-  color: var(--color-accent-saffron);
+  color: var(--majestic-saffron);
 }
 
 body {
@@ -70,7 +85,9 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: transparent; /* Changed to transparent for visibility */
+  color: var(--color-text-main);
+  background-color: var(--color-bg-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -83,6 +100,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
   line-height: 1.2;
+  color: var(--color-text-main);
 }
 
 button {
@@ -92,38 +110,34 @@ button {
   font-size: 1em;
   font-weight: 600;
   font-family: 'Outfit', inherit;
-  background-color: var(--color-primary-blue);
+  background-color: var(--primary-blue);
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 button:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--primary-hover);
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
-/* ── Global Premium Utilities ── */
 .card-premium {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-text-main);
 }
 
 .card-premium:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  border-color: #cbd5e1;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-blue);
 }
 
 .btn-premium {
   padding: 12px 24px;
-  background: linear-gradient(135deg, var(--color-primary-blue), #2563eb);
+  background: linear-gradient(135deg, var(--primary-blue), #2563eb);
   border: none;
   border-radius: 12px;
   color: #fff;
@@ -131,11 +145,6 @@ button:focus-visible {
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
   transition: all 0.2s ease;
-}
-
-.btn-premium:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
 }
 
 .badge-premium {
@@ -148,7 +157,7 @@ button:focus-visible {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--color-bg-body);
+  color: var(--color-text-muted);
   border: 1px solid var(--color-border);
 }

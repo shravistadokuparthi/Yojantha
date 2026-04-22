@@ -80,6 +80,8 @@ function Home({ navigateTo }) {
             We make it easy to find precisely which ones can help you and your family 
             today — with no complicated paperwork.
           </p>
+
+
           <div className="home-hero-footer">
             <button className="home-btn-primary" onClick={() => navigateTo("schemes")}>
               Find My Benefits →

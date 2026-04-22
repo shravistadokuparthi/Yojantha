@@ -124,8 +124,12 @@ exports.addInterestedScheme = async (req, res) => {
     }
 
     const user = await User.findById(req.user.id);
-    if (!user.interestedSchemes.includes(schemeId) && !user.appliedSchemes.includes(schemeId)) {
-      user.interestedSchemes.push(schemeId);
+    const isAlreadyInterested = user.interestedSchemes.some(
+      (item) => (typeof item === "string" ? item === schemeId : item.schemeId === schemeId)
+    );
+
+    if (!isAlreadyInterested && !user.appliedSchemes.includes(schemeId)) {
+      user.interestedSchemes.push({ schemeId, addedAt: new Date() });
       await user.save();
     }
 
@@ -146,7 +150,9 @@ exports.addAppliedScheme = async (req, res) => {
     if (!user.appliedSchemes.includes(schemeId)) {
       user.appliedSchemes.push(schemeId);
       // Remove from interested if present
-      user.interestedSchemes = user.interestedSchemes.filter(id => id !== schemeId);
+      user.interestedSchemes = user.interestedSchemes.filter((item) =>
+        typeof item === "string" ? item !== schemeId : item.schemeId !== schemeId
+      );
       await user.save();
     }
 

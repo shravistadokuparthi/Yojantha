@@ -45,6 +45,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [emailExists, setEmailExists] = useState(null); // null, true, or false
+
 
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -55,7 +57,27 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
 
-  /* LOGIN */
+  /* CHECK EMAIL */
+  const checkEmailExists = async (val) => {
+    if (!val || !val.includes("@")) return;
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: val }),
+      });
+      const data = await res.json();
+      setEmailExists(data.exists);
+      if (!data.exists) {
+        setError("This email is not registered yet.");
+      } else {
+        setError("");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleLogin = async () => {
 
     if (!email || !password) {
@@ -235,10 +257,17 @@ function Login() {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                    onChange={(e) => { 
+                      setEmail(e.target.value); 
+                      setError(""); 
+                      setEmailExists(null); 
+                    }}
+                    onBlur={(e) => checkEmailExists(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                   />
+                  {emailExists === true && <div className="yj-success-hint">✓ Account found</div>}
                 </div>
+
 
                 <div className="yj-field">
                   <label className="yj-label">Password</label>

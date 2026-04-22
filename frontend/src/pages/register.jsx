@@ -41,7 +41,11 @@ function Register() {
   const [formData, setFormData] = useState({
     name: "", email: "", password: "", confirmPassword: ""
   });
+  const [otp, setOtp] = useState("");
+  const [showOTP, setShowOTP] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +53,7 @@ function Register() {
     if (error) setError("");
   };
 
-  const handleRegister = async () => {
+  const handleSendOTP = async () => {
     const { name, email, password, confirmPassword } = formData;
 
     if (!name || !email || !password || !confirmPassword) {
@@ -68,11 +72,40 @@ function Register() {
       setError("Passwords do not match"); return;
     }
 
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setShowOTP(true);
+        setError("");
+      } else {
+        setError(data.message || "Failed to send verification code");
+      }
+    } catch {
+      setError("Server error. Try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    const { name, email, password, confirmPassword } = formData;
+
+    if (!otp) {
+      setError("Please enter the verification code sent to your email"); return;
+    }
+
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, confirmPassword })
+        body: JSON.stringify({ name, email, password, confirmPassword, otp })
       });
       const data = await response.json();
       if (response.ok) {
@@ -83,8 +116,11 @@ function Register() {
       }
     } catch {
       setError("Server error. Try again later.");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <ThematicBackground opacity={0.4} animate={true} mode="light">
@@ -143,49 +179,106 @@ function Register() {
 
             {error && <div className="yj-error">⚠ {error}</div>}
 
-            <div className="yj-field">
-              <label className="yj-label">Full Name</label>
-              <input
-                className="yj-input" name="name" type="text"
-                placeholder="Your full name"
-                value={formData.name} onChange={handleChange}
-              />
-            </div>
+            {!showOTP ? (
+              <>
+                <div className="yj-field">
+                  <label className="yj-label">Full Name</label>
+                  <input
+                    className="yj-input" name="name" type="text"
+                    placeholder="Your full name"
+                    value={formData.name} onChange={handleChange}
+                  />
+                </div>
 
-            <div className="yj-field">
-              <label className="yj-label">Email Address</label>
-              <input
-                className="yj-input" name="email" type="email"
-                placeholder="you@example.com"
-                value={formData.email} onChange={handleChange}
-              />
-            </div>
+                <div className="yj-field">
+                  <label className="yj-label">Email Address</label>
+                  <input
+                    className="yj-input" name="email" type="email"
+                    placeholder="you@example.com"
+                    value={formData.email} onChange={handleChange}
+                  />
+                </div>
 
-            <div className="yj-field">
-              <label className="yj-label">Password</label>
-              <input
-                className="yj-input" name="password" type="password"
-                placeholder="••••••••"
-                value={formData.password} onChange={handleChange}
-              />
-              {formData.password && <StrengthBar password={formData.password} />}
-            </div>
+                <div className="yj-field">
+                  <label className="yj-label">Password</label>
+                  <input
+                    className="yj-input" name="password" type="password"
+                    placeholder="••••••••"
+                    value={formData.password} onChange={handleChange}
+                  />
+                  {formData.password && <StrengthBar password={formData.password} />}
+                </div>
 
-            <div className="yj-field">
-              <label className="yj-label">Confirm Password</label>
-              <input
-                className="yj-input" name="confirmPassword" type="password"
-                placeholder="••••••••"
-                value={formData.confirmPassword} onChange={handleChange}
-                onPaste={(e) => e.preventDefault()}
-                onCopy={(e) => e.preventDefault()}
-                onCut={(e) => e.preventDefault()}
-              />
-            </div>
+                <div className="yj-field">
+                  <label className="yj-label">Confirm Password</label>
+                  <input
+                    className="yj-input" name="confirmPassword" type="password"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword} onChange={handleChange}
+                    onPaste={(e) => e.preventDefault()}
+                    onCopy={(e) => e.preventDefault()}
+                    onCut={(e) => e.preventDefault()}
+                  />
+                </div>
 
-            <button className="yj-btn" onClick={handleRegister}>
-              Create Account →
-            </button>
+                <button className="yj-btn" onClick={handleSendOTP} disabled={loading}>
+                  {loading ? "Sending Code..." : "Verify Email & Register →"}
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="yj-card-sub" style={{ marginBottom: '20px', color: '#1d4ed8', fontWeight: 600 }}>
+                  Verification code sent to {formData.email}
+                </div>
+                <div className="yj-field" style={{ marginTop: '20px' }}>
+                  <label className="yj-label">Enter 6-Digit OTP</label>
+                  <input
+                    className="yj-input" 
+                    type="text"
+                    placeholder="------"
+                    maxLength={6}
+                    autoFocus
+                    style={{ 
+                      textAlign: 'center', 
+                      letterSpacing: '12px', 
+                      fontSize: '32px', 
+                      fontWeight: '800',
+                      background: '#f8fafc',
+                      border: '2px solid #3b82f6'
+                    }}
+                    value={otp} 
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, "");
+                      setOtp(val);
+                      if (val.length === 6) {
+                        // Optional: auto-submit or visual feedback
+                      }
+                    }}
+                  />
+                </div>
+                <button className="yj-btn" onClick={handleRegister} disabled={loading || otp.length !== 6}>
+                  {loading ? "Verifying..." : "Complete Registration 🎉"}
+                </button>
+                <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                  <span 
+                    className="yj-link" 
+                    style={{ fontSize: '14px', color: loading ? '#94a3b8' : '#2563eb' }}
+                    onClick={!loading ? handleSendOTP : undefined}
+                  >
+                    Didn't receive code? Resend OTP
+                  </span>
+                </div>
+
+                <button 
+                  className="yj-btn-ghost" 
+                  style={{ marginTop: '10px' }}
+                  onClick={() => setShowOTP(false)}
+                >
+                  ← Edit Details
+                </button>
+              </>
+            )}
+
 
             <div className="yj-divider">or</div>
 

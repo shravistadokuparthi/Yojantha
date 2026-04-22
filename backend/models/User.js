@@ -43,10 +43,12 @@ const userSchema = new mongoose.Schema({
     default: ""
   },
 
-  interestedSchemes: {
-  type: [String],
-  default: []
-},
+  interestedSchemes: [
+    {
+      schemeId: { type: String, required: true },
+      addedAt: { type: Date, default: Date.now }
+    }
+  ],
 
 appliedSchemes: {
   type: [String],

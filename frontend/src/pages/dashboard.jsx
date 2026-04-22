@@ -7,6 +7,8 @@ import MySchemes from "./MySchemes";
 import Chatbot from "./Chatbot";
 import "./dashboard.css";
 import ThematicBackground from "../components/ThematicBackground";
+import { useEffect } from "react";
+
 
 const NAV_ITEMS = [
   { id: "home",    label: "Home",    icon: "🏠" },
@@ -17,6 +19,36 @@ const NAV_ITEMS = [
 function Dashboard() {
   const [active, setActive] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const res = await fetch("http://localhost:5000/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err);
+      }
+    };
+    fetchUser();
+  }, []);
+
 
   // State passed from Schemes → Recommendations
   const [recParams, setRecParams] = useState({});
@@ -73,6 +105,8 @@ function Dashboard() {
               <span className="dash-brand-name" style={{ fontSize: '18px' }}>Yojanta</span>
               <span className="dash-brand-sub">सत्यमेव जयते ● Government of India</span>
             </div>
+
+
           </div>
 
         {/* Nav */}
@@ -117,11 +151,23 @@ function Dashboard() {
             {currentPage.icon}{" "}{currentPage.label}
           </div>
 
-          <div className="dash-topbar-badge majestic-badge">
-            <span className="dash-dot" />
-            Viksit Bharat @ 2047
+          <button 
+            className="dash-theme-toggle" 
+            onClick={toggleTheme}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === "light" ? "🌙" : "☀️"}
+          </button>
+
+          <div 
+            className="dash-profile-trigger" 
+            onClick={() => setActive("profile")}
+            title={user?.name || "Profile"}
+          >
+            {user?.name ? user.name.charAt(0).toUpperCase() : "👤"}
           </div>
         </header>
+
 
         {/* Page content */}
         <main className="dash-content" key={active}>

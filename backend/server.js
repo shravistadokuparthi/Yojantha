@@ -13,7 +13,12 @@ const applyRoutes = require("./routes/applyRoutes");
 const schemesRoutes = require(path.join(__dirname, "routes", "schemesRoutes"));
 const aiRoutes = require("./routes/airoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const initReminders = require("./cron/schemeReminders");
+
 const app = express();
+
+// Initialize Cron Jobs
+initReminders();
 
 app.use(cors());
 app.use(express.json());

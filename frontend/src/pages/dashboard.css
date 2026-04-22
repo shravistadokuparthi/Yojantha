@@ -3,26 +3,35 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue-primary: #1d4ed8;
-  --blue-hover:   #1e40af;
-  --saffron:      #f97316;
-  --emerald:      #10b981;
-  --grad:         linear-gradient(135deg, #1d4ed8, #2563eb);
+  --blue-primary: var(--primary-blue);
+  --blue-hover:   var(--primary-hover);
+  --saffron:      var(--majestic-saffron);
+  --emerald:      var(--emerald-green);
+  --grad:         linear-gradient(135deg, var(--primary-blue), #2563eb);
   
-  --bg-app:       #f4f6f8;
-  --bg-surface:   #ffffff;
-  --border:       #e2e8f0;
+  --bg-app:       var(--color-bg-body);
+  --bg-surface:   var(--color-bg-card);
+  --border:       var(--color-border);
   
-  --text-main:    #0f172a;
-  --text-muted:   #64748b;
-  --text-dim:     #94a3b8;
+  --text-main:    var(--color-text-main);
+  --text-muted:   var(--color-text-muted);
+  --text-dim:     var(--color-text-muted);
+
   
   --sidebar-w:    280px; /* Slightly wider for official logo */
   --topbar-h:     80px;  /* Taller header */
   --font-d:       'Outfit', sans-serif;
   --font-b:       'Inter', sans-serif;
   --r:            12px;
+
+  /* Official Colors */
+  --official-navy:    #061a40;
+  --official-saffron: #ff9933;
+  --official-white:   #ffffff;
+  --official-green:   #138808;
+  --official-blue:    #000080;
 }
+
 
 /* ── root ── */
 .dash-root {
@@ -95,6 +104,8 @@
   line-height: 1.1;
 }
 
+
+
 .dash-brand-sub {
   font-size: 10px;
   color: var(--text-muted);
@@ -150,12 +161,13 @@
 
 .dash-sidebar-footer {
   padding: 20px 24px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
   font-size: 11px;
-  color: var(--text-dim);
+  color: var(--text-muted);
   text-align: center;
   line-height: 1.4;
 }
+
 
 /* ── main area ── */
 .dash-main {
@@ -176,7 +188,7 @@
   align-items: center;
   gap: 24px;
   padding: 0 48px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-bg-topbar);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
   position: sticky;
@@ -184,7 +196,30 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
+.dash-theme-toggle {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.dash-theme-toggle:hover {
+  background: var(--bg-app);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
 .dash-topbar-title {
+
   font-family: var(--font-d);
   font-size: 20px; font-weight: 800;
   color: var(--text-main);
@@ -217,6 +252,32 @@
   max-width: 1400px;
   margin: 0 auto;
 }
+
+.dash-profile-trigger {
+  width: 42px;
+  height: 42px;
+  background: var(--grad);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: var(--font-d);
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
+.dash-profile-trigger:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(29, 78, 216, 0.3);
+}
+
 
 /* ── responsive ── */
 @media (max-width: 1024px) {

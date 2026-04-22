@@ -24,7 +24,7 @@ function MySchemes({ type = "interested", navigateTo }) {
 
         const ids = type === "applied"
           ? user.appliedSchemes || []
-          : user.interestedSchemes || [];
+          : (user.interestedSchemes || []).map(item => typeof item === 'string' ? item : item.schemeId);
 
         if (!ids.length) { setSchemes([]); setLoading(false); return; }
 
