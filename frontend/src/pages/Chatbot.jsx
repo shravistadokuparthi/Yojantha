@@ -362,9 +362,7 @@ function Chatbot() {
   );
 }
 
-/**
- * Format bot text: **bold**, newlines, and bullets to HTML.
- */
+
 function formatBotMessage(text) {
   if (!text) return "";
   return text

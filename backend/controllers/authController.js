@@ -272,15 +272,17 @@ exports.sendOTP = async (req, res) => {
       return res.status(400).json({ message: "User already registered" });
     }
 
-    // 2. Quick DNS Check for Domain Existence
+    // 2. DNS Check for Domain (Informative, non-blocking)
     const domain = email.split("@")[1];
     try {
       const addresses = await resolveMx(domain);
       if (!addresses || addresses.length === 0) {
-        return res.status(400).json({ message: "Email domain does not exist or cannot receive emails" });
+        console.warn(`Warning: No MX records found for domain ${domain}. Email delivery might fail.`);
       }
     } catch (e) {
-      return res.status(400).json({ message: "Invalid email domain" });
+      // Log the error but don't block registration. 
+      // DNS resolution can be flaky or blocked in some environments.
+      console.error(`DNS Lookup failed for ${domain}:`, e.message);
     }
 
     // 3. Generate 6 digit code
